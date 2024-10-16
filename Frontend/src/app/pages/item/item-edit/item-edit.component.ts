@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-item-edit',
@@ -13,13 +14,14 @@ export class ItemEditComponent implements OnInit {
   editItemForm: FormGroup;
   itemId!: string;
   loading = true;
-  private user_id = '9b0e09a7-31d6-4897-8a3e-cc4cf4d1433a';
+  private user_id = 'BCD2CCE7-D48A-4015-847F-9EE5FAB3AA4E';
 
   constructor(
     private fb: NonNullableFormBuilder,
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
     private message: NzMessageService
   ) {
     this.editItemForm = this.fb.group({
@@ -42,6 +44,7 @@ export class ItemEditComponent implements OnInit {
         quantity: item.quantity
       });
       this.loading = false;
+      this.cdr.detectChanges(); // Kích hoạt lại quá trình phát hiện thay đổi
     }, error => {
       this.loading = false;
       this.message.error('Error loading item details');
@@ -56,6 +59,9 @@ export class ItemEditComponent implements OnInit {
         user_id: this.user_id,
         ...this.editItemForm.value
       };
+
+      // In ra chuỗi JSON của updatedItem
+    console.log('Updated Item JSON:', JSON.stringify(updatedItem));
 
       this.itemService.updateItem(this.itemId, updatedItem).subscribe({
         next: () => {

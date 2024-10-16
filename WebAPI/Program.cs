@@ -11,7 +11,10 @@ QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<InvoicikaDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"))
+     .LogTo(Console.WriteLine, LogLevel.Information)
+           .EnableSensitiveDataLogging());
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;

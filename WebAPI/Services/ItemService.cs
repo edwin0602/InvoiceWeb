@@ -61,6 +61,7 @@ namespace WebAPI.Services
         public async Task UpdateItemAsync(Item item)
         {
             _context.Items.Update(item);
+
             await _context.SaveChangesAsync();
         }
 
