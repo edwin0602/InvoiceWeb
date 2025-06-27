@@ -9,95 +9,70 @@
     nzTitle="Editar Cliente">
   </nz-page-header>
 
-  <form nz-form [formGroup]="editCustomerForm" (ngSubmit)="submitForm()" nzFormLayout="vertical">
-    <nz-row [nzGutter]="16">
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">ID</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="customerId" readonly />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true" nzRequired>Nombre del Cliente</nz-form-label>
-          <nz-form-control [nzErrorTip]="nameErrorTpl">
-            <input nz-input formControlName="name" placeholder="Ingrese el nombre del cliente" />
-            <ng-template #nameErrorTpl let-control>
-              <ng-container *ngIf="control.errors?.['required']">
-                ¡Por favor ingrese el nombre del cliente!
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="8">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Estado</nz-form-label>
-          <nz-form-control>
-            <nz-select formControlName="status" nzPlaceHolder="Seleccione estado">
-              <nz-option nzValue="Activo" nzLabel="Activo"></nz-option>
-              <nz-option nzValue="Inactivo" nzLabel="Inactivo"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row [nzGutter]="16">
-      <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Dirección</nz-form-label>
-          <nz-form-control>
-            <textarea nz-input formControlName="address" rows="3" placeholder="Ingrese la dirección"></textarea>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Teléfono</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="phoneNumber" placeholder="Ingrese el número de teléfono" />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Correo electrónico</nz-form-label>
-          <nz-form-control [nzErrorTip]="emailErrorTpl">
-            <input nz-input formControlName="email" placeholder="Ingrese el correo electrónico" />
-            <ng-template #emailErrorTpl let-control>
-              <ng-container *ngIf="control.errors?.['email']">
-                ¡Por favor ingrese un correo electrónico válido!
-              </ng-container>
-            </ng-template>
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
-    <nz-row [nzGutter]="16">
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Fecha de Creación</nz-form-label>
-          <nz-form-control>
-            <input nz-input type="text" formControlName="creationDate" readonly />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-form-item>
-          <nz-form-label [nzNoColon]="true">Fecha de Actualización</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="updateDate" readonly />
-          </nz-form-control>
-        </nz-form-item>
-      </nz-col>
-    </nz-row>
-
+  <form nz-form [formGroup]="editCustomerForm" (ngSubmit)="submitForm()">
     <nz-form-item>
-      <nz-form-control>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="customerId">ID</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="customerId" id="customerId" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Nombre del Cliente</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="nameErrorTpl">
+        <input nz-input formControlName="name" id="name" placeholder="Ingrese el nombre del cliente" />
+        <ng-template #nameErrorTpl let-control>
+          <ng-container *ngIf="control.errors?.['required']">
+            ¡Por favor ingrese el nombre del cliente!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="status">Estado</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-select formControlName="status" id="status" nzPlaceHolder="Seleccione estado">
+          <nz-option nzValue="Activo" nzLabel="Activo"></nz-option>
+          <nz-option nzValue="Inactivo" nzLabel="Inactivo"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address">Dirección</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <textarea nz-input formControlName="address" id="address" rows="3" placeholder="Ingrese la dirección"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber">Teléfono</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="phoneNumber" id="phoneNumber" placeholder="Ingrese el número de teléfono" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">Correo electrónico</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="emailErrorTpl">
+        <input nz-input formControlName="email" id="email" placeholder="Ingrese el correo electrónico" />
+        <ng-template #emailErrorTpl let-control>
+          <ng-container *ngIf="control.errors?.['email']">
+            ¡Por favor ingrese un correo electrónico válido!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="creationDate">Fecha de Creación</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input type="text" formControlName="creationDate" id="creationDate" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="updateDate">Fecha de Actualización</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="updateDate" id="updateDate" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzOffset]="6">
         <button nz-button nzType="primary" [disabled]="!editCustomerForm.valid">
           <span nz-icon nzType="edit"></span>Editar
         </button>

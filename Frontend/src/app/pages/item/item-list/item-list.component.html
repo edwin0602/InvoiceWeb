@@ -1,4 +1,5 @@
-<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Lista de Artículos">
+<nz-page-header nzBackIcon (nzBack)="onBack()">
+  <nz-page-header-title>Lista de Artículos</nz-page-header-title>
   <nz-page-header-extra>
     <nz-space>
       <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
@@ -9,47 +10,48 @@
           <span nz-icon nzType="search"></span>
         </button>
       </ng-template>
-      <nz-divider nzType="vertical"></nz-divider>
-      <button nz-button nzType="dashed" (click)="loadDataFromServer(pageIndex, pageSize, null, null, [], null)">
+      <button *nzSpaceItem nz-button nzType="dashed" (click)="loadDataFromServer(pageIndex, pageSize, null, null, [], null)">
         <span nz-icon nzType="redo"></span>
         Refrescar
       </button>
-      <nz-divider nzType="vertical"></nz-divider>
       <button *nzSpaceItem nz-button nzType="primary" [routerLink]="['/items/add']">
-        <span nz-icon nzType="plus"></span>Agregar
+        <span nz-icon nzType="plus"></span>
+        Agregar
       </button>
     </nz-space>
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-table #basicTable [nzData]="listOfItems" [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total"
-  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" nzBordered>
-  <thead>
-    <tr>
-      <th nzColumnKey="name" nzShowSort>Nombre</th>
-      <th nzColumnKey="description" nzShowSort>Descripción</th>
-      <th nzColumnKey="purchasePrice" nzShowSort>Precio de Compra</th>
-      <th nzColumnKey="salePrice" nzShowSort>Precio de Venta</th>
-      <th nzColumnKey="quantity" nzShowSort>Cantidad</th>
-      <th nzColumnKey="actions">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of listOfItems">
-      <td>{{ item.name }}</td>
-      <td>{{ item.description }}</td>
-      <td>{{ item.purchasePrice | currency }}</td>
-      <td>{{ item.salePrice | currency }}</td>
-      <td>{{ item.quantity }}</td>
-      <td>
-        <a [routerLink]="['/items/edit', item.itemId]">
-          <span nz-icon nzType="edit" nzTheme="outline" style="color: orange;"></span>
-        </a>
-        <nz-divider nzType="vertical"></nz-divider>
-        <a (click)="showDeleteConfirm(item)">
-          <span nz-icon nzType="delete" nzTheme="outline" style="color: red"></span>
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
+<div style="overflow-x:auto;">
+  <nz-table #basicTable [nzData]="listOfItems" [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total"
+    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" nzBordered>
+    <thead>
+      <tr>
+        <th nzColumnKey="name" nzShowSort>Nombre</th>
+        <th nzColumnKey="description" nzShowSort>Descripción</th>
+        <th nzColumnKey="purchasePrice" nzShowSort>Precio de Compra</th>
+        <th nzColumnKey="salePrice" nzShowSort>Precio de Venta</th>
+        <th nzColumnKey="quantity" nzShowSort>Cantidad</th>
+        <th nzColumnKey="actions">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfItems">
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.purchasePrice | currency }}</td>
+        <td>{{ item.salePrice | currency }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>
+          <a [routerLink]="['/items/edit', item.itemId]">
+            <span nz-icon nzType="edit" nzTheme="outline" style="color: orange;"></span>
+          </a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="showDeleteConfirm(item)">
+            <span nz-icon nzType="delete" nzTheme="outline" style="color: red"></span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

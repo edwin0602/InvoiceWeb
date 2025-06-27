@@ -1,5 +1,5 @@
 <nz-page-header nzTitle="Agregar Cliente" nzBackIcon (nzBack)="onBack()"></nz-page-header>
-<form nz-form [formGroup]="addCustomerForm" (ngSubmit)="submitForm()" nzFormLayout="vertical">
+<form nz-form [formGroup]="addCustomerForm" (ngSubmit)="submitForm()">
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Nombre del Cliente</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="nameErrorTpl">
