@@ -6,9 +6,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { CustomerInvoiceService } from 'src/app/services/customerinvoice.service';
 
 @Component({
-  selector: 'app-customer-edit',
-  templateUrl: './customer-edit.component.html',
-  styleUrls: ['./customer-edit.component.less']
+    selector: 'app-customer-edit',
+    templateUrl: './customer-edit.component.html',
+    styleUrls: ['./customer-edit.component.less'],
+    standalone: false
 })
 export class CustomerEditComponent implements OnInit {
   editCustomerForm: FormGroup;

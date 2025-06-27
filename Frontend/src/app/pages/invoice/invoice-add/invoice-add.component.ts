@@ -7,9 +7,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { CustomerInvoiceService } from 'src/app/services/customerinvoice.service';
 
 @Component({
-  selector: 'app-invoice-add',
-  templateUrl: './invoice-add.component.html',
-  styleUrls: ['./invoice-add.component.less'],
+    selector: 'app-invoice-add',
+    templateUrl: './invoice-add.component.html',
+    styleUrls: ['./invoice-add.component.less'],
+    standalone: false
 })
 export class InvoiceAddComponent implements OnInit {
   validateForm!: FormGroup;

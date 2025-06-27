@@ -7,9 +7,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-vat-list',
-  templateUrl: './vat-list.component.html',
-  styleUrls: ['./vat-list.component.less'],
+    selector: 'app-vat-list',
+    templateUrl: './vat-list.component.html',
+    styleUrls: ['./vat-list.component.less'],
+    standalone: false
 })
 export class VatListComponent implements OnInit {
   total = 0;

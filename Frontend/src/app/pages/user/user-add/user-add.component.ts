@@ -11,9 +11,10 @@ import { UserService } from 'src/app/services/user.service';
 import { RoleService } from 'src/app/services/role.service';
 
 @Component({
-  selector: 'app-user-add',
-  templateUrl: './user-add.component.html',
-  styleUrls: ['./user-add.component.less'],
+    selector: 'app-user-add',
+    templateUrl: './user-add.component.html',
+    styleUrls: ['./user-add.component.less'],
+    standalone: false
 })
 export class UserAddComponent {
   addUserForm: FormGroup;

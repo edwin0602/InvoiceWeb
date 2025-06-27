@@ -6,9 +6,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
-  selector: 'app-item-edit',
-  templateUrl: './item-edit.component.html',
-  styleUrls: ['./item-edit.component.less']
+    selector: 'app-item-edit',
+    templateUrl: './item-edit.component.html',
+    styleUrls: ['./item-edit.component.less'],
+    standalone: false
 })
 export class ItemEditComponent implements OnInit {
   editItemForm: FormGroup;

@@ -8,9 +8,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { CustomerInvoiceService } from 'src/app/services/customerinvoice.service';
 
 @Component({
-  selector: 'app-invoice-edit',
-  templateUrl: './invoice-edit.component.html',
-  styleUrls: ['./invoice-edit.component.less'],
+    selector: 'app-invoice-edit',
+    templateUrl: './invoice-edit.component.html',
+    styleUrls: ['./invoice-edit.component.less'],
+    standalone: false
 })
 export class InvoiceEditComponent implements OnInit {
   validateForm!: FormGroup;

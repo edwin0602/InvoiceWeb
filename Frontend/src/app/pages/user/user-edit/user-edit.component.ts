@@ -12,9 +12,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-user-edit',
-  templateUrl: './user-edit.component.html',
-  styleUrls: ['./user-edit.component.less'],
+    selector: 'app-user-edit',
+    templateUrl: './user-edit.component.html',
+    styleUrls: ['./user-edit.component.less'],
+    standalone: false
 })
 export class UserEditComponent implements OnInit {
   editUserForm: FormGroup;

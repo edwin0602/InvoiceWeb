@@ -7,9 +7,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.less'],
+    selector: 'app-user-list',
+    templateUrl: './user-list.component.html',
+    styleUrls: ['./user-list.component.less'],
+    standalone: false
 })
 export class UserListComponent implements OnInit {
   listOfUsers: any[] = [];

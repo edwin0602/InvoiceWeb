@@ -10,9 +10,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { ItemService } from 'src/app/services/item.service';
 
 @Component({
-  selector: 'app-item-add',
-  templateUrl: './item-add.component.html',
-  styleUrls: ['./item-add.component.less'],
+    selector: 'app-item-add',
+    templateUrl: './item-add.component.html',
+    styleUrls: ['./item-add.component.less'],
+    standalone: false
 })
 export class ItemAddComponent {
   addItemForm: FormGroup;

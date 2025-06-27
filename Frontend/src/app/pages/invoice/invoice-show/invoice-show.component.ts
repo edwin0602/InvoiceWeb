@@ -8,9 +8,10 @@ import { VatService } from 'src/app/services/vat.service';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-invoice-show',
-  templateUrl: './invoice-show.component.html',
-  styleUrls: ['./invoice-show.component.less'],
+    selector: 'app-invoice-show',
+    templateUrl: './invoice-show.component.html',
+    styleUrls: ['./invoice-show.component.less'],
+    standalone: false
 })
 export class InvoiceShowComponent implements OnInit {
   invoice: any = {};

@@ -7,9 +7,10 @@ import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.less']
+    selector: 'app-item-list',
+    templateUrl: './item-list.component.html',
+    styleUrls: ['./item-list.component.less'],
+    standalone: false
 })
 export class ItemListComponent implements OnInit {
   total = 0;

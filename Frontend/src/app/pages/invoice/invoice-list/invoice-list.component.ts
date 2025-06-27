@@ -7,9 +7,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-  selector: 'app-invoice-list',
-  templateUrl: './invoice-list.component.html',
-  styleUrls: ['./invoice-list.component.less'],
+    selector: 'app-invoice-list',
+    templateUrl: './invoice-list.component.html',
+    styleUrls: ['./invoice-list.component.less'],
+    standalone: false
 })
 export class InvoiceListComponent implements OnInit {
   total = 0;

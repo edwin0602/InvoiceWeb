@@ -4,9 +4,10 @@ import { RoleService } from 'src/app/services/role.service'; // Adjust the path 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-  selector: 'app-role-list',
-  templateUrl: './role-list.component.html',
-  styleUrls: ['./role-list.component.less'],
+    selector: 'app-role-list',
+    templateUrl: './role-list.component.html',
+    styleUrls: ['./role-list.component.less'],
+    standalone: false
 })
 export class RoleListComponent implements OnInit {
   roles: any[] = [];

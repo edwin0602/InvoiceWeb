@@ -10,9 +10,10 @@ import { CustomerService } from 'src/app/services/customer.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-  selector: 'app-customer-add',
-  templateUrl: './customer-add.component.html',
-  styleUrls: ['./customer-add.component.less'],
+    selector: 'app-customer-add',
+    templateUrl: './customer-add.component.html',
+    styleUrls: ['./customer-add.component.less'],
+    standalone: false
 })
 export class CustomerAddComponent {
   addCustomerForm: FormGroup;

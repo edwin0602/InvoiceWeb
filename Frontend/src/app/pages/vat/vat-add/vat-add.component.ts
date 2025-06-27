@@ -5,9 +5,10 @@ import { VatService } from 'src/app/services/vat.service'; // Adjusted for VAT s
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
-  selector: 'app-vat-add',
-  templateUrl: './vat-add.component.html',
-  styleUrls: ['./vat-add.component.less'],
+    selector: 'app-vat-add',
+    templateUrl: './vat-add.component.html',
+    styleUrls: ['./vat-add.component.less'],
+    standalone: false
 })
 export class VatAddComponent {
   addVatForm: FormGroup;
