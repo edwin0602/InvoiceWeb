@@ -9,6 +9,7 @@ using System.Globalization;
 using MailKit.Security;
 using MimeKit;
 using MailKit.Net.Smtp;
+using WebAPI.Common.Constants;
 
 
 namespace WebAPI.Services
@@ -50,9 +51,12 @@ namespace WebAPI.Services
             return new CustomerInvoiceDto
             {
                 CustomerInvoiceId = invoice.CustomerInvoiceId,
+                Status = invoice.Status,
+                InvoiceType = invoice.InvoiceType,
                 Customer_id = invoice.Customer_id,
                 User_id = invoice.User_id,
                 InvoiceDate = invoice.InvoiceDate,
+                ExpirationDate = invoice.ExpirationDate,
                 CreationDate = invoice.CreationDate,
                 UpdateDate = invoice.UpdateDate,
                 SubTotalAmount = invoice.SubTotalAmount,
@@ -86,9 +90,12 @@ namespace WebAPI.Services
             return invoices.Select(invoice => new CustomerInvoiceDto
             {
                 CustomerInvoiceId = invoice.CustomerInvoiceId,
+                Status = invoice.Status,
+                InvoiceType = invoice.InvoiceType,
                 Customer_id = invoice.Customer_id,
                 User_id = invoice.User_id,
                 InvoiceDate = invoice.InvoiceDate,
+                ExpirationDate = invoice.ExpirationDate,
                 CreationDate = invoice.CreationDate,
                 UpdateDate = invoice.UpdateDate,
                 SubTotalAmount = invoice.SubTotalAmount,
@@ -113,15 +120,18 @@ namespace WebAPI.Services
             var invoice = new CustomerInvoice
             {
                 CustomerInvoiceId = dto.CustomerInvoiceId,
+                InvoiceType = dto.InvoiceType,
                 Customer_id = dto.Customer_id,
                 User_id = dto.User_id,
                 Vat_id = dto.Vat_id,
                 InvoiceDate = dto.InvoiceDate,
+                ExpirationDate = dto.ExpirationDate,
                 CreationDate = dto.CreationDate,
                 UpdateDate = dto.UpdateDate,
                 SubTotalAmount = dto.SubTotalAmount,
                 VatAmount = dto.VatAmount,
                 TotalAmount = dto.TotalAmount,
+                Status = InvoiceStatuses.Created,
                 CustomerInvoiceLines = dto.CustomerInvoiceLines.Select(l => new CustomerInvoiceLine
                 {
                     InvoiceLineId = l.InvoiceLineId,
@@ -144,7 +154,7 @@ namespace WebAPI.Services
                 throw;
             }
         }
-        
+
         public async Task<bool> UpdateCustomerInvoiceAsync(Guid id, CustomerInvoiceDto updatedInvoice)
         {
             var existingInvoice = await _context.CustomerInvoices
@@ -156,6 +166,7 @@ namespace WebAPI.Services
             existingInvoice.Customer_id = updatedInvoice.Customer_id;
             existingInvoice.User_id = updatedInvoice.User_id;
             existingInvoice.InvoiceDate = updatedInvoice.InvoiceDate;
+            existingInvoice.ExpirationDate = updatedInvoice.ExpirationDate;
             existingInvoice.UpdateDate = DateTime.UtcNow; //
             existingInvoice.SubTotalAmount = updatedInvoice.SubTotalAmount;
             existingInvoice.VatAmount = updatedInvoice.VatAmount;
@@ -179,6 +190,7 @@ namespace WebAPI.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
         public async Task DeleteCustomerInvoiceAsync(Guid id)
         {
             var invoice = await _context.CustomerInvoices.FindAsync(id);
@@ -189,13 +201,12 @@ namespace WebAPI.Services
             await _context.SaveChangesAsync();
         }
 
-
         public async Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId)
         {
             var invoice = await _context.CustomerInvoices
-            .Include(c => c.Customer)  
-            .Include(c => c.User)      
-            .Include(c => c.VAT)       
+            .Include(c => c.Customer)
+            .Include(c => c.User)
+            .Include(c => c.VAT)
             .Include(c => c.CustomerInvoiceLines)
             .ThenInclude(l => l.Item)
             .FirstOrDefaultAsync(c => c.CustomerInvoiceId == invoiceId);
@@ -224,20 +235,22 @@ namespace WebAPI.Services
             var invoiceDetails = new
             {
                 InvoiceNumber = invoice.CustomerInvoiceId.ToString(),
-                InvoiceDate = invoice.InvoiceDate.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture)
+                InvoiceDate = invoice.InvoiceDate.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture),
+                InvoiceStatus = invoice.Status,
+                InvoiceType = invoice.InvoiceType
             };
 
             var vatPercentage = invoice.VAT.Percentage;
             // Calculations for subtotal, VAT, and total
             var subTotal = invoice.SubTotalAmount;
-            var vat = subTotal * (invoice.VatAmount/100); 
+            var vat = subTotal * (invoice.VatAmount / 100);
             var total = invoice.TotalAmount;
 
             var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
-                    page.Size(PageSizes.A4); 
+                    page.Size(PageSizes.A4);
                     page.Margin(1, Unit.Centimetre);
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x.FontSize(9));
@@ -251,9 +264,9 @@ namespace WebAPI.Services
                         });
                     });
 
-                     page.Content().PaddingVertical(20).Column(column =>
+                    page.Content().PaddingVertical(20).Column(column =>
                     {
-                        
+
                         column.Item().Row(row =>
                         {
                             row.RelativeItem().Column(columnLeft =>
@@ -285,14 +298,14 @@ namespace WebAPI.Services
                             });
                         });
 
-                        
+
                         column.Item().PaddingTop(5).PaddingBottom(15).LineHorizontal(1).LineColor(Colors.Blue.Medium);
                         column.Item().Table(table =>
                         {
-                            
+
                             table.ColumnsDefinition(columns =>
                             {
-                                columns.ConstantColumn(100);  
+                                columns.ConstantColumn(100);
                                 columns.RelativeColumn(180);
                                 columns.RelativeColumn(40);
                                 columns.RelativeColumn(60);
@@ -447,8 +460,7 @@ namespace WebAPI.Services
             }
         }
 
- 
-        }
-
     }
+
+}
 

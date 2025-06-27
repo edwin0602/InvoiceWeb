@@ -1,53 +1,45 @@
-<nz-page-header
-  class="site-page-header"
-  (nzBack)="onBack()"
-  nzBackIcon
-  nzTitle="Add Customer">
-</nz-page-header>
-
-<form nz-form [formGroup]="addCustomerForm" (ngSubmit)="submitForm()">
+<nz-page-header nzTitle="Agregar Cliente" nzBackIcon (nzBack)="onBack()"></nz-page-header>
+<form nz-form [formGroup]="addCustomerForm" (ngSubmit)="submitForm()" nzFormLayout="vertical">
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Customer Name</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
-      <input nz-input formControlName="name" placeholder="Enter customer name" />
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Nombre del Cliente</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="nameErrorTpl">
+      <input nz-input formControlName="name" id="name" placeholder="Ingrese el nombre del cliente" />
       <ng-template #nameErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          Please input the customer name!
+          ¡Por favor ingrese el nombre del cliente!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
-
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">Address</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <textarea nz-input formControlName="address" rows="3" placeholder="Enter address"></textarea>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address">Dirección</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <textarea nz-input formControlName="address" id="address" rows="3" placeholder="Ingrese la dirección"></textarea>
     </nz-form-control>
   </nz-form-item>
-
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">Phone Number</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <input nz-input formControlName="phoneNumber" placeholder="Enter phone number" />
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber">Teléfono</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="phoneNumber" id="phoneNumber" placeholder="Ingrese el número de teléfono" />
     </nz-form-control>
   </nz-form-item>
-
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">Email</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="emailErrorTpl">
-      <input nz-input formControlName="email" placeholder="Enter email" />
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">Correo electrónico</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="emailErrorTpl">
+      <input nz-input formControlName="email" id="email" placeholder="Ingrese el correo electrónico" />
       <ng-template #emailErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['email']">
-          Please input a valid email address!
+          ¡Por favor ingrese un correo electrónico válido!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
-
   <nz-form-item>
-    <nz-form-control [nzOffset]="7" [nzSpan]="12">
-      <button nz-button nzType="primary" [disabled]="!addCustomerForm.valid"><span nz-icon nzType="plus"></span>Create</button>
-      <button nz-button (click)="resetForm($event)">Reset</button>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzOffset]="6">
+      <button nz-button nzType="primary" [disabled]="!addCustomerForm.valid">
+        <span nz-icon nzType="plus"></span>Agregar
+      </button>
+      <button nz-button (click)="resetForm($event)">Restablecer</button>
     </nz-form-control>
   </nz-form-item>
 </form>

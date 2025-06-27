@@ -1,13 +1,8 @@
-<nz-page-header
-  class="site-page-header"
-  (nzBack)="onBack()"
-  nzBackIcon
-  nzTitle="Users List"
->
+<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Lista de Usuarios">
   <nz-page-header-extra>
     <nz-space>
       <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-        <input type="text" nz-input placeholder="Search" />
+        <input type="text" nz-input placeholder="Buscar" />
       </nz-input-group>
       <ng-template #suffixIconButton>
         <button nz-button nzSearch>
@@ -15,45 +10,27 @@
         </button>
       </ng-template>
       <nz-divider nzType="vertical"></nz-divider>
-      <button
-        nz-button
-        nzType="dashed"
-        (click)="loadDataFromServer(pageIndex, pageSize, null, null, [])"
-      >
-        <span nz-icon nzType="redo"></span> Refresh
+      <button nz-button nzType="dashed" (click)="loadDataFromServer(pageIndex, pageSize, null, null, [])">
+        <span nz-icon nzType="redo"></span> Refrescar
       </button>
       <nz-divider nzType="vertical"></nz-divider>
-      <button
-        *nzSpaceItem
-        nz-button
-        nzType="primary"
-        [routerLink]="['/users/add']"
-      >
-      <span nz-icon nzType="plus"></span>
-        Add User
+      <button *nzSpaceItem nz-button nzType="primary" [routerLink]="['/users/add']">
+        <span nz-icon nzType="plus"></span>
+        Agregar Usuario
       </button>
     </nz-space>
   </nz-page-header-extra>
 </nz-page-header>
 
-<nz-table
-  #basicTable
-  [nzData]="listOfUsers"
-  [nzFrontPagination]="false"
-  [nzLoading]="loading"
-  [nzTotal]="total"
-  [nzPageSize]="pageSize"
-  [nzPageIndex]="pageIndex"
-  (nzQueryParams)="onQueryParamsChange($event)"
-  nzBordered
->
+<nz-table #basicTable [nzData]="listOfUsers" [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total"
+  [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" nzBordered>
   <thead>
     <tr>
-      <th nzColumnKey="username" nzShowSort>Username</th>
-      <th nzColumnKey="emailAddress" nzShowSort>Email</th>
-      <th nzColumnKey="photoUrl">Photo</th>
-      <th nzColumnKey="roleName">Role</th>
-      <th nzColumnKey="actions">Actions</th>
+      <th nzColumnKey="username" nzShowSort>Usuario</th>
+      <th nzColumnKey="emailAddress" nzShowSort>Correo electrónico</th>
+      <th nzColumnKey="photoUrl">Foto</th>
+      <th nzColumnKey="roleName">Rol</th>
+      <th nzColumnKey="actions">Acciones</th>
     </tr>
   </thead>
   <tbody>
@@ -62,31 +39,17 @@
       <td>{{ user.emailAddress }}</td>
       <td>
         <ng-container *ngIf="user.photoUrl">
-          <img
-            [src]="basePath + user.photoUrl"
-            alt="Profile Photo"
-            style="max-width: 50px; margin-top: 10px"
-          />
+          <img [src]="basePath + user.photoUrl" alt="Foto de Perfil" style="max-width: 50px; margin-top: 10px" />
         </ng-container>
       </td>
       <td>{{ user.roleName }}</td>
       <td>
         <a [routerLink]="['/users/edit', user.userId]">
-          <span
-            nz-icon
-            nzType="edit"
-            nzTheme="outline"
-            style="color: orange"
-          ></span>
+          <span nz-icon nzType="edit" nzTheme="outline" style="color: orange"></span>
         </a>
         <nz-divider nzType="vertical"></nz-divider>
         <a (click)="showDeleteConfirm(user)">
-          <span
-            nz-icon
-            nzType="delete"
-            nzTheme="outline"
-            style="color: red"
-          ></span>
+          <span nz-icon nzType="delete" nzTheme="outline" style="color: red"></span>
         </a>
       </td>
     </tr>

@@ -2,7 +2,7 @@
   class="site-page-header"
   (nzBack)="onBack()"
   nzBackIcon
-  nzTitle="VAT List"
+  nzTitle="Lista de IVA"
 >
   <nz-page-header-extra>
     <nz-space>
@@ -12,7 +12,7 @@
         (click)="loadDataFromServer(pageIndex, pageSize, null, null, [])"
       >
         <span nz-icon nzType="redo"></span>
-        Refresh
+        Refrescar
       </button>
       <nz-divider nzType="vertical"></nz-divider>
       <button
@@ -22,7 +22,7 @@
         [routerLink]="['/vat/add']"
       >
       <span nz-icon nzType="plus"></span>
-        Add VAT
+        Agregar IVA
       </button>
     </nz-space>
   </nz-page-header-extra>
@@ -41,8 +41,8 @@
 >
   <thead>
     <tr>
-      <th nzColumnKey="percentage" nzShowSort>Percentage (%)</th>
-      <th nzColumnKey="actions">Actions</th>
+      <th nzColumnKey="percentage" nzShowSort>Porcentaje (%)</th>
+      <th nzColumnKey="actions">Acciones</th>
     </tr>
   </thead>
   <tbody>

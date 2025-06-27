@@ -14,6 +14,28 @@ namespace WebAPI.Models
         public string Username { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string LastName { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string DocumentNumber { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Status { get; set; }
+
+        [StringLength(512)]
+        public string? Address { get; set; }
+
+        [StringLength(50)]
+        public string? PhoneNumber { get; set; }
+
+        [Required]
         [StringLength(256)]
         public string EmailAddress { get; set; }
 
@@ -37,5 +59,6 @@ namespace WebAPI.Models
 
         [JsonIgnore]
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+
     }
 }

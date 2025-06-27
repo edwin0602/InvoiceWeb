@@ -14,6 +14,22 @@ export class AppComponent implements OnInit, OnDestroy {
   role: string | null = null;
   private authSubscription: Subscription | null = null; 
 
+  menuItems = [
+    { label: 'Inicio', icon: 'dashboard', route: '/dashboard' },
+    { label: 'Facturas', icon: 'send', route: '/invoices/all' },
+    { label: 'Clientes', icon: 'team', route: '/customers/all' },
+    { label: 'Productos', icon: 'folder-open', route: '/items/all' },
+    {
+      label: 'Configuración',
+      icon: 'setting',
+      children: [
+        { label: 'IVA', route: '/vat/all' },
+        { label: 'Usuarios', route: '/users/all', adminOnly: true },
+        { label: 'Roles', route: '/roles/all', adminOnly: true }
+      ]
+    }
+  ];
+
   constructor(public authService: AuthService) {}
 
 
@@ -35,5 +51,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.username = userInfo.username;
     this.userId = userInfo.userId;
     this.role = userInfo.role;
+  }
+
+  closeMenuOnMobile() {
+    if (window.innerWidth < 992) {
+      this.isCollapsed = true;
+    }
   }
 }

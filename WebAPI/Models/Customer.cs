@@ -22,10 +22,16 @@ namespace WebAPI.Models
         public string? Email { get; set; }
 
         [Required]
+        [StringLength(50)]
+        public string Status { get; set; }
+
+        [Required]
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdateDate { get; set; }
 
         public virtual ICollection<CustomerInvoice> CustomerInvoices { get; set; } = new List<CustomerInvoice>();
+
+        public virtual ICollection<CustomerFile> CustomerFiles { get; set; } = new List<CustomerFile>();
     }
 }

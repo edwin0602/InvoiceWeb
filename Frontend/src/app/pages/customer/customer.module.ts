@@ -13,11 +13,12 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
-import { NzDividerModule } from 'ng-zorro-antd/divider';// For displaying notifications
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     CommonModule,
     CustomerRoutingModule,
     ReactiveFormsModule,
+    NzSelectModule,
     NzTableModule,
     NzIconModule,
     NzSpaceModule,
@@ -42,7 +44,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzMessageModule,
     NzSpinModule,
     FormsModule,
-    NzModalModule
+    NzModalModule,
+    SharedModule
 ]
 })
 export class CustomerModule { }

@@ -62,6 +62,25 @@ export class CustomerInvoiceService {
     return this.http.get<any[]>(this.vatUrl).pipe(catchError(() => of([])));
   }
 
+  getInvoiceStatus(): Observable<any[]> {
+    return of([
+      { value: 'Created', name: 'Creada' },
+      { value: 'Cancelled', name: 'Cancelada' },
+      { value: 'Paid', name: 'Pagada' },
+      { value: 'Pending', name: 'Pendiente' },
+      { value: 'PartiallyPaid', name: 'Parcialmente Pagada' },
+      { value: 'Overdue', name: 'Vencida' }
+    ]);
+  }
+
+  getInvoiceTypes(): Observable<any[]> {
+    return of([
+      { value: 'Final', name: 'Final' },
+      { value: 'Quotation', name: 'Cotización' },
+      { value: 'Draft', name: 'Borrador' }
+    ]);
+  }
+
   getCustomers(): Observable<any[]> {
     return this.http
       .get<any[]>(this.customersUrl)

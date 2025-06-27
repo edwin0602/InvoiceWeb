@@ -2,11 +2,19 @@
 using System.ComponentModel.DataAnnotations;
 using WebAPI.Models;
 using System.Text.Json.Serialization;
+using WebAPI.Common.Constants;
 
 public class CustomerInvoice
 {
     [Key]
     public Guid CustomerInvoiceId { get; set; } = Guid.NewGuid();
+    
+    [Required]
+    public string Status { get; set; } = InvoiceStatuses.Created;
+
+    [Required]
+    [StringLength(50)]
+    public string InvoiceType { get; set; } = InvoiceTypes.Draft;
 
     [Required]
     public Guid Customer_id { get; set; }
@@ -29,6 +37,8 @@ public class CustomerInvoice
 
     public DateTime? UpdateDate { get; set; }
 
+    public DateTime? ExpirationDate { get; set; }
+
     [Required]
     [Column(TypeName = "decimal(10,2)")]
     public decimal SubTotalAmount { get; set; }
@@ -49,4 +59,5 @@ public class CustomerInvoice
     [ForeignKey(nameof(Vat_id))]
     [JsonIgnore]
     public virtual VAT VAT { get; set; }
+
 }

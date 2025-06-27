@@ -51,23 +51,6 @@ namespace WebAPI.Controllers
             return CreatedAtAction(nameof(GetCustomerInvoice), new { id = dto.CustomerInvoiceId }, dto);
         }
 
-        // PUT: api/CustomerInvoice/{id}
-        /*
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCustomerInvoice(Guid id, [FromBody] CustomerInvoiceDto dto)
-        {
-            try
-            {
-                await _service.UpdateCustomerInvoiceAsync(id, dto);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-        } */
-
-        // PUT: api/CustomerInvoice/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInvoice(Guid id, [FromBody] CustomerInvoiceDto updatedInvoice)
         {

@@ -19,13 +19,14 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { InvoiceShowComponent } from './invoice-show/invoice-show.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
     InvoiceListComponent,
     InvoiceAddComponent,
     InvoiceEditComponent,
-    InvoiceShowComponent,
+    InvoiceShowComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +44,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzDatePickerModule,
     NzSpinModule,
     NzModalModule,
+    SharedModule,
   ],
 })
 export class InvoiceModule {}

@@ -2,64 +2,64 @@
   class="site-page-header"
   (nzBack)="onBack()"
   nzBackIcon
-  nzTitle="Add Item">
+  nzTitle="Agregar Artículo">
 </nz-page-header>
 
 <form nz-form [formGroup]="addItemForm" (ngSubmit)="submitForm()">
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Item Name</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>Nombre del Artículo</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="nameErrorTpl">
-      <input nz-input formControlName="name" placeholder="Enter item name" />
+      <input nz-input formControlName="name" placeholder="Ingrese el nombre del artículo" />
       <ng-template #nameErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          Please input the item name!
+          ¡Por favor ingrese el nombre del artículo!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="7">Description</nz-form-label>
+    <nz-form-label [nzSpan]="7">Descripción</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <textarea nz-input formControlName="description" rows="3" placeholder="Enter description"></textarea>
+      <textarea nz-input formControlName="description" rows="3" placeholder="Ingrese la descripción"></textarea>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Purchase Price</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>Precio de Compra</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="priceErrorTpl">
-      <input nz-input type="number" formControlName="purchasePrice" placeholder="Enter purchase price" />
+      <input nz-input type="number" formControlName="purchasePrice" placeholder="Ingrese el precio de compra" />
       <ng-template #priceErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          Please input the purchase price!
+          ¡Por favor ingrese el precio de compra!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Sale Price</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>Precio de Venta</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="priceErrorTpl">
-      <input nz-input type="number" formControlName="salePrice" placeholder="Enter sale price" />
+      <input nz-input type="number" formControlName="salePrice" placeholder="Ingrese el precio de venta" />
       <ng-template #priceErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          Please input the sale price!
+          ¡Por favor ingrese el precio de venta!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Quantity</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>Cantidad</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback>
-      <input nz-input type="number" formControlName="quantity" placeholder="Enter quantity" />
+      <input nz-input type="number" formControlName="quantity" placeholder="Ingrese la cantidad" />
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="12">
-      <button nz-button nzType="primary" [disabled]="!addItemForm.valid"><span nz-icon nzType="plus"></span>Create</button>
-      <button nz-button (click)="resetForm($event)">Reset</button>
+      <button nz-button nzType="primary" [disabled]="!addItemForm.valid"><span nz-icon nzType="plus"></span>Crear</button>
+      <button nz-button (click)="resetForm($event)">Restablecer</button>
     </nz-form-control>
   </nz-form-item>
 </form>

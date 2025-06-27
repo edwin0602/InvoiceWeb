@@ -1,105 +1,67 @@
-<nz-page-header nzTitle="New Invoice" nzSubtitle="" nzBackIcon [nzGhost]="false">
+<nz-page-header nzTitle="Registrar Factura" nzSubtitle="" nzBackIcon [nzGhost]="false">
 </nz-page-header>
-<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzFormLayout="vertical" class="no-horizontal-padding">
   <div class="form-row">
     <nz-row [nzGutter]="16" class="header">
-      <!-- Company Info Section -->
-      <nz-col nzSpan="5">
-    <nz-form-item>
-      <nz-form-label nzFor="customerId">Customer</nz-form-label>
-      <nz-form-control>
-        <nz-select formControlName="customerId" nzPlaceHolder="Select Customer">
-          <nz-option
-            *ngFor="let customer of customersList"
-            [nzValue]="customer.customerId"
-            [nzLabel]="customer.name"
-          ></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-  </nz-col>
-  <nz-col nzSpan="1"></nz-col>
-  <!-- Date Info Section -->
-  <nz-col nzSpan="8">
-    <nz-form-item>
-      <nz-form-label nzFor="invoiceDate">Invoice Date</nz-form-label>
-      <nz-form-control>
-        <nz-date-picker formControlName="invoiceDate"></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-  </nz-col>
-</nz-row>
+      <nz-col nzSpan="8">
+        <nz-form-control [nzXs]="24" [nzSm]="24">
+          <nz-form-label nzFor="customerId">Cliente</nz-form-label>
+          <nz-select formControlName="customerId" nzPlaceHolder="Seleccione Cliente">
+            <nz-option *ngFor="let customer of customersList" [nzValue]="customer.customerId"
+              [nzLabel]="customer.name"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-form-control [nzXs]="24" [nzSm]="24">
+          <nz-form-label nzFor="invoiceDate">Fecha de Facturación</nz-form-label><br />
+          <nz-date-picker formControlName="invoiceDate" nzPlaceHolder="Seleccione fecha" style="width: 100%;"></nz-date-picker>
+        </nz-form-control>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-form-control [nzXs]="24" [nzSm]="24">
+          <nz-form-label nzFor="invoiceType">Tipo de Factura</nz-form-label>
+          <nz-select formControlName="invoiceType" nzPlaceHolder="Seleccione tipo de factura">
+            <nz-option *ngFor="let type of invoiceTypeList" [nzValue]="type.value" [nzLabel]="type.name | translate"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-col>
+    </nz-row>
   </div>
 
+  <nz-divider></nz-divider>
+
   <nz-form-array formArrayName="lineItems">
-    <nz-form-item
-      *ngFor="let lineItem of lineItems.controls; let i = index"
-      [formGroupName]="i"
-    >
+    <nz-form-item *ngFor="let lineItem of lineItems.controls; let i = index" [formGroupName]="i">
       <div class="line-item-row">
         <nz-form-control [nzXs]="24" [nzSm]="6">
-          <nz-form-label nzFor="item{{ i }}">Item</nz-form-label>
-          <nz-select
-            formControlName="item"
-            (ngModelChange)="onItemChange(i, $event)"
-            id="item{{ i }}"
-          >
-            <nz-option
-              *ngFor="let item of itemsList"
-              [nzValue]="item.itemId"
-              [nzLabel]="item.name"
-            ></nz-option>
+          <nz-form-label nzFor="item{{ i }}">Artículo</nz-form-label>
+          <nz-select formControlName="item" (ngModelChange)="onItemChange(i, $event)" id="item{{ i }}">
+            <nz-option *ngFor="let item of itemsList" [nzValue]="item.itemId" [nzLabel]="item.name"></nz-option>
           </nz-select>
         </nz-form-control>
 
         <nz-form-control [nzXs]="24" [nzSm]="6">
-          <nz-form-label nzFor="description{{ i }}">Description</nz-form-label>
-          <input
-            nz-input
-            placeholder="Description"
-            formControlName="description"
-            id="description{{ i }}"
-          />
+          <nz-form-label nzFor="description{{ i }}">Descripción</nz-form-label>
+          <input nz-input placeholder="Descripción" formControlName="description" id="description{{ i }}" />
         </nz-form-control>
 
         <nz-form-control [nzXs]="24" [nzSm]="4">
-          <nz-form-label nzFor="quantity{{ i }}">Quantity</nz-form-label>
-          <input
-            nz-input
-            type="number"
-            formControlName="quantity"
-            id="quantity{{ i }}"
-            (ngModelChange)="calculateTotals()"
-          />
+          <nz-form-label nzFor="quantity{{ i }}">Cantidad</nz-form-label>
+          <input nz-input type="number" formControlName="quantity" id="quantity{{ i }}"
+            (ngModelChange)="calculateTotals()" />
         </nz-form-control>
 
         <nz-form-control [nzXs]="24" [nzSm]="4">
-          <nz-form-label nzFor="price{{ i }}">Price</nz-form-label>
-          <input
-            nz-input
-            type="number"
-            formControlName="price"
-            id="price{{ i }}"
-            (ngModelChange)="calculateTotals()"
-          />
+          <nz-form-label nzFor="price{{ i }}">Precio</nz-form-label>
+          <input nz-input type="number" formControlName="price" id="price{{ i }}" (ngModelChange)="calculateTotals()" />
         </nz-form-control>
 
         <nz-form-control [nzXs]="24" [nzSm]="4" class="line-item-total">
           <nz-form-label nzFor="total{{ i }}">Total</nz-form-label>
           <div class="line-item-total-content">
-            <input
-              nz-input
-              type="number"
-              formControlName="total"
-              id="total{{ i }}"
-              [attr.disabled]="true"
-            />
-            <span
-              nz-icon
-              nzType="minus-circle-o"
-              class="dynamic-delete-button"
-              (click)="removeLineItem(i)"
-            ></span>
+            <input nz-input type="number" formControlName="total" id="total{{ i }}" [attr.disabled]="true" />
+            <span nz-icon nzType="minus-circle-o" class="dynamic-delete-button" (click)="removeLineItem(i)"></span>
           </div>
         </nz-form-control>
       </div>
@@ -108,41 +70,32 @@
 
   <nz-form-item>
     <nz-form-control [nzXs]="24" [nzSm]="24">
-      <button
-        nz-button
-        nzType="dashed"
-        class="add-button full-width"
-        (click)="addLineItem()"
-      >
+      <button nz-button nzType="dashed" class="add-button full-width" (click)="addLineItem()">
         <span nz-icon nzType="plus"></span>
-        Add Line Item
+        Agregar Item
       </button>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item class="right-align">
     <nz-form-control [nzXs]="24" [nzSm]="8">
-      <nz-form-label>Sub Total</nz-form-label>
+      <nz-form-label>Subtotal</nz-form-label>
       <input nz-input [value]="validateForm.get('subTotal')?.value" disabled />
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item class="right-align">
-    <nz-form-label nzFor="vatId">VAT</nz-form-label>
+    <nz-form-label nzFor="vatId">IVA</nz-form-label>
     <nz-form-control [nzXs]="24" [nzSm]="8">
       <nz-select formControlName="vatId" (ngModelChange)="calculateVatAmount()">
-        <nz-option
-          *ngFor="let vat of vatsList"
-          [nzValue]="vat.vatId"
-          [nzLabel]="vat.percentage + '%'"
-        ></nz-option>
+        <nz-option *ngFor="let vat of vatsList" [nzValue]="vat.vatId" [nzLabel]="vat.percentage + '%'"></nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item class="right-align">
     <nz-form-control [nzXs]="24" [nzSm]="8">
-      <nz-form-label>Select Tax Value</nz-form-label>
+      <nz-form-label>Valor del Impuesto</nz-form-label>
       <input nz-input [value]="validateForm.get('tax')?.value" disabled />
     </nz-form-control>
   </nz-form-item>
@@ -156,7 +109,7 @@
 
   <nz-form-item>
     <nz-form-control [nzXs]="24" [nzSm]="8">
-      <button nz-button nzType="primary" class="small-button"><span nz-icon nzType="plus"></span>Create</button>
+      <button nz-button nzType="primary" class="small-button"><span nz-icon nzType="plus"></span>Registrar Factura</button>
     </nz-form-control>
   </nz-form-item>
 </form>

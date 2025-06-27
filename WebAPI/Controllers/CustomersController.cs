@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models;
 using WebAPI.Services;
+using WebAPI.Dtos;
 
 namespace WebAPI.Controllers
 {
@@ -15,78 +15,84 @@ namespace WebAPI.Controllers
             _customerService = customerService;
         }
 
-        // GET: api/Customers
         [HttpGet]
-        
-
         public async Task<IActionResult> GetCustomers([FromQuery] string? searchTerm, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var result = await _customerService.GetCustomersPagedAndSortedAsync(searchTerm, pageNumber, pageSize);
             return Ok(result);
         }
 
-        // GET: api/Customers/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomerById(Guid id)
+        [HttpGet("{customerId}")]
+        public async Task<IActionResult> GetCustomerById(Guid customerId)
         {
-            var customer = await _customerService.GetCustomerByIdAsync(id);
-            if (customer == null)
+            var customerDto = await _customerService.GetCustomerByIdAsync(customerId);
+            if (customerDto == null)
             {
                 return NotFound();
             }
-            return Ok(customer);
+            return Ok(customerDto);
         }
 
-        // POST: api/Customers
         [HttpPost]
-        public async Task<IActionResult> CreateCustomer([FromBody] Customer customer)
+        public async Task<IActionResult> CreateCustomer([FromBody] CustomerDto customerDto)
         {
-            if (customer == null)
+            if (customerDto == null)
             {
                 return BadRequest();
             }
 
-            await _customerService.AddCustomerAsync(customer);
-            return CreatedAtAction(nameof(GetCustomerById), new { id = customer.CustomerId }, customer);
+            await _customerService.AddCustomerAsync(customerDto);
+            return CreatedAtAction(nameof(GetCustomerById), new { customerId = customerDto.CustomerId }, customerDto);
         }
 
-        // PUT: api/Customers/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(Guid id, [FromBody] Customer customer)
+        [HttpPut("{customerId}")]
+        public async Task<IActionResult> UpdateCustomer(Guid customerId, [FromBody] CustomerDto customerDto)
         {
-            if (id != customer.CustomerId)
+            if (customerId != customerDto.CustomerId)
             {
                 return BadRequest("Customer ID mismatch");
             }
 
-            var existingCustomer = await _customerService.GetCustomerByIdAsync(id);
+            var existingCustomer = await _customerService.GetCustomerByIdAsync(customerId);
             if (existingCustomer == null)
             {
                 return NotFound();
             }
 
-            // Update existing customer fields
-            existingCustomer.Name = customer.Name;
-            existingCustomer.Address = customer.Address;
-            existingCustomer.PhoneNumber = customer.PhoneNumber;
-            existingCustomer.Email = customer.Email;
-            existingCustomer.UpdateDate = DateTime.UtcNow;
-
-            await _customerService.UpdateCustomerAsync(existingCustomer);
+            await _customerService.UpdateCustomerAsync(customerDto);
             return NoContent();
         }
 
-        // DELETE: api/Customers/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(Guid id)
+        [HttpDelete("{customerId}")]
+        public async Task<IActionResult> DeleteCustomer(Guid customerId)
         {
-            var existingCustomer = await _customerService.GetCustomerByIdAsync(id);
+            var existingCustomer = await _customerService.GetCustomerByIdAsync(customerId);
             if (existingCustomer == null)
             {
                 return NotFound();
             }
 
-            await _customerService.DeleteCustomerAsync(id);
+            await _customerService.DeleteCustomerAsync(customerId);
+            return NoContent();
+        }
+
+        [HttpPost("{customerId}/files")]
+        public async Task<IActionResult> AddFileToCustomer(Guid customerId, [FromBody] CustomerFileDto fileDto)
+        {
+            if (fileDto == null)
+                return BadRequest();
+
+            await _customerService.AddFileToCustomerAsync(customerId, fileDto);
+            return Ok();
+        }
+
+        [HttpPut("{customerId}/files/{fileId}/status")]
+        public async Task<IActionResult> UpdateCustomerFileStatus(Guid customerId, Guid fileId, [FromBody] string newStatus)
+        {
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return BadRequest("Status is required.");
+
+            await _customerService.UpdateCustomerFileStatusAsync(customerId, fileId, newStatus);
             return NoContent();
         }
     }

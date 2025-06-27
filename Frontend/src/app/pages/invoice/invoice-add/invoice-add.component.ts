@@ -17,6 +17,7 @@ export class InvoiceAddComponent implements OnInit {
   usersList: any[] = [];
   vatsList: any[] = [];
   itemsList: any[] = [];
+  invoiceTypeList: any[] = [];
   subTotalAmount = 0;
   vatAmount = 0;
   totalAmount = 0;
@@ -28,13 +29,15 @@ export class InvoiceAddComponent implements OnInit {
     private router: Router,
     private message: NzMessageService,
     private auth: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       customerId: [null, [Validators.required]],
       invoiceDate: [null, [Validators.required]],
       vatId: [null],
+      invoiceType: [null, [Validators.required]],
+      status: ['Created', [Validators.required]],
       subTotal: [0],
       tax: [0],
       total: [0],
@@ -45,6 +48,7 @@ export class InvoiceAddComponent implements OnInit {
     this.loadUsers();
     this.loadVats();
     this.loadItems();
+    this.loadInvoiceTypes();
     this.addLineItem();
     this.userId = this.auth.getUserInfo().userId;
   }
@@ -64,11 +68,17 @@ export class InvoiceAddComponent implements OnInit {
   loadVats() {
     this.invoiceService.getVats().subscribe((data: any) => {
       this.vatsList = data;
-      const defaultVat = this.vatsList.find((vat) => vat.percentage === 5); // Set default VAT to 5%
+      const defaultVat = this.vatsList.find((vat) => vat.percentage === 0);
       if (defaultVat) {
         this.validateForm.patchValue({ vatId: defaultVat.vatId });
         this.calculateVatAmount();
       }
+    });
+  }
+
+  loadInvoiceTypes() {
+    this.invoiceService.getInvoiceTypes().subscribe((data: any) => {
+      this.invoiceTypeList = data;
     });
   }
 
@@ -145,6 +155,8 @@ export class InvoiceAddComponent implements OnInit {
         user_id: this.userId,
         invoiceDate: formValue.invoiceDate,
         vat_id: formValue.vatId,
+        invoiceType: formValue.invoiceType,
+        status: formValue.status || 'Draft',
         subTotalAmount: parseFloat(formValue.subTotal),
         vatAmount: parseFloat(formValue.tax),
         totalAmount: parseFloat(formValue.total),
@@ -158,7 +170,7 @@ export class InvoiceAddComponent implements OnInit {
       this.invoiceService.addCustomerInvoice(payload).subscribe({
         next: () => {
           this.message.success('Invoice added successfully');
-          this.router.navigate(['/invoices/all']); // Redirect after success
+          this.router.navigate(['/invoices/all']);
         },
         error: (err) => {
           this.message.error('Error adding invoice');

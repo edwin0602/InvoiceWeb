@@ -1,52 +1,58 @@
-<nz-page-header nzTitle="Invoice details" nzSubtitle="" nzBackIcon [nzGhost]="false">
+<nz-page-header nzTitle="Detalles de la Factura" nzSubtitle="" nzBackIcon [nzGhost]="false">
   <nz-page-header-extra>
-    <button nz-button nzType="primary" (click)="printInvoice(invoice.customerInvoiceId)"><span nz-icon nzType="download"></span>Print</button>
-    <button nz-button nzType="default" (click)="printInvoicePdf(invoice.customerInvoiceId)" style="margin-left: 8px;"><span nz-icon nzType="printer"></span>PDF</button>
-    <button nz-button nzType="default" (click)="emailInvoicePdf(invoice.customerInvoiceId)" style="margin-left: 8px;"><span nz-icon nzType="mail"></span>Email</button>
+    <button nz-button nzType="primary" (click)="printInvoice(invoice.customerInvoiceId)">
+      <span nz-icon nzType="download"></span>Imprimir
+    </button>
+    <button nz-button nzType="default" (click)="printInvoicePdf(invoice.customerInvoiceId)" style="margin-left: 8px;">
+      <span nz-icon nzType="printer"></span>PDF
+    </button>
+    <button nz-button nzType="default" (click)="emailInvoicePdf(invoice.customerInvoiceId)" style="margin-left: 8px;">
+      <span nz-icon nzType="mail"></span>Correo
+    </button>
   </nz-page-header-extra>
 </nz-page-header>
 
 <div class="invoice-container">
-  <!-- Header Section -->
+  <!-- Sección de Encabezado -->
   <nz-row [nzGutter]="16" class="header">
-    <!-- Company Info Section -->
+    <!-- Información de la Empresa -->
     <nz-col nzSpan="8">
       <div class="company-info">
         <p><strong>Invoicika Inc.</strong></p>
         <p>456 Business Road, Metropolis</p>
-        <p>Phone: (123) 456-7890</p>
-        <p>Email: info@invoicika.com</p>
+        <p>Teléfono: (123) 456-7890</p>
+        <p>Correo: infosadinvoicika.com</p>
       </div>
     </nz-col>
 
-    <!-- Customer Info Section -->
+    <!-- Información del Cliente -->
     <nz-col nzSpan="8">
       <div class="customer-info">
         <p><strong>{{ customer.name }}</strong></p>
         <p>{{ customer.address }}</p>
         <p>{{ customer.phoneNumber }}</p>
-        <p>Email: {{ customer.email }}</p>
+        <p>Correo: {{ customer.email }}</p>
       </div>
     </nz-col>
 
-    <!-- Date Info Section -->
+    <!-- Información de la Factura -->
     <nz-col nzSpan="8">
       <div class="date-info">
-        <p><strong>Invoice No: {{ invoice.customerInvoiceId }}</strong></p>
-        <p>Date: {{ invoice.invoiceDate | date }}</p>
-        <p>By: {{currentUser}}</p>
+        <p><strong>Factura No: {{ invoice.customerInvoiceId }}</strong></p>
+        <p>Fecha: {{ invoice.invoiceDate | date }}</p>
+        <p>Por: {{currentUser}}</p>
       </div>
     </nz-col>
   </nz-row>
 
-  <!-- Invoice Table -->
+  <!-- Tabla de Factura -->
   <nz-table #basicTable [nzData]="invoiceItems" [nzBordered]="false" [nzFrontPagination]="false" nzSize="middle">
     <thead>
       <tr>
-        <th>Product</th>
-        <th>Description</th>
-        <th>Quantity</th>
-        <th>Price</th>
+        <th>Producto</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
         <th>Total</th>
       </tr>
     </thead>
@@ -71,7 +77,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <td>VAT ({{ vat.percentage }}%)</td>
+        <td>IVA ({{ vat.percentage }}%)</td>
         <td>{{ vatAmount | currency }}</td>
       </tr>
       <tr>

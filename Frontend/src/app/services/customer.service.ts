@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment'; // Import the envi
 export class CustomerService {
   private apiUrl = environment.apiUrl + 'customers'; // Use the environment variable
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCustomers(
     pageNumber: number,
@@ -22,9 +22,9 @@ export class CustomerService {
       .set('pageSize', `${pageSize}`)
       .set('sortField', sortField || '')
       .set('sortOrder', sortOrder || '');
-      if (searchTerm) {
-        params = params.set('searchTerm', searchTerm);
-      }
+    if (searchTerm) {
+      params = params.set('searchTerm', searchTerm);
+    }
     filters.forEach((filter) => {
       filter.value.forEach((value) => {
         params = params.append(filter.key, value);
@@ -51,5 +51,12 @@ export class CustomerService {
   deleteCustomer(customerId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${customerId}`);
   }
-  
+
+  getCustomerStatus(): Observable<any[]> {
+    return of([
+      { value: 'Active', name: 'Activo' },
+      { value: 'Deleted', name: 'Eliminado' }
+    ]);
+  }
+
 }

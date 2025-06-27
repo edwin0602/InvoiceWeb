@@ -106,7 +106,13 @@ namespace WebAPI.Controllers
                 Role_id = user.Role_id,
                 RoleName = user.Role?.RoleName,
                 CreationDate = user.CreationDate,
-                UpdateDate = user.UpdateDate
+                UpdateDate = user.UpdateDate,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DocumentNumber = user.DocumentNumber,
+                Status = user.Status,
+                Address = user.Address,
+                PhoneNumber = user.PhoneNumber
             };
         }
 
@@ -119,10 +125,16 @@ namespace WebAPI.Controllers
                 Username = userDto.Username,
                 EmailAddress = userDto.EmailAddress,
                 PhotoUrl = userDto.PhotoUrl,
-                PasswordHash = userDto.PasswordHash,  // Make sure to handle password securely
+                PasswordHash = userDto.PasswordHash,
                 Role_id = userDto.Role_id,
                 CreationDate = userDto.CreationDate ?? DateTime.UtcNow,
-                UpdateDate = userDto.UpdateDate
+                UpdateDate = userDto.UpdateDate,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                DocumentNumber = userDto.DocumentNumber,
+                Status = userDto.Status,
+                Address = userDto.Address,
+                PhoneNumber = userDto.PhoneNumber
             };
         }
 

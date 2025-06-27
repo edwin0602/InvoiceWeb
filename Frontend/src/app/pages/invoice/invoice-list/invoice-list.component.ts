@@ -5,7 +5,6 @@ import { CustomerInvoiceService } from 'src/app/services/customerinvoice.service
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-invoice-list',
@@ -44,7 +43,6 @@ export class InvoiceListComponent implements OnInit {
   loadUsers() {
     this.invoiceService.getUsers().subscribe((data: any) => {
       this.usersList = data;
-      console.log(this.usersList);
     });
   }
 

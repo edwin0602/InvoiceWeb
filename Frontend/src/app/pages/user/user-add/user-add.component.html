@@ -1,1 +1,106 @@
-<p>user-add works!</p>
+<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Agregar Usuario">
+</nz-page-header>
+
+<form nz-form [formGroup]="addUserForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Nombre de Usuario</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="usernameErrorTpl">
+      <input nz-input formControlName="username" placeholder="Ingrese el nombre de usuario" />
+      <ng-template #usernameErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['required']">
+          ¡Por favor ingrese el nombre de usuario!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Correo electrónico</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="emailErrorTpl">
+      <input nz-input formControlName="emailAddress" placeholder="Ingrese el correo electrónico" />
+      <ng-template #emailErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['email']">
+          ¡Por favor ingrese un correo electrónico válido!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Nombre</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="firstName" placeholder="Ingrese el nombre" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Apellido</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="lastName" placeholder="Ingrese el apellido" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Número de Documento</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="documentNumber" placeholder="Ingrese el número de documento" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Dirección</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="address" placeholder="Ingrese la dirección" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Teléfono</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback>
+      <input nz-input formControlName="phoneNumber" placeholder="Ingrese el número de teléfono" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Contraseña</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+      <input nz-input type="password" formControlName="passwordHash" placeholder="Ingrese la contraseña" />
+      <ng-template #passwordErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['required']">
+          ¡Por favor ingrese la contraseña!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Rol</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="roleErrorTpl">
+      <nz-select formControlName="role_id" nzPlaceHolder="Seleccione un rol">
+        <nz-option *ngFor="let role of roles" [nzValue]="role.roleId" [nzLabel]="role.roleName"></nz-option>
+      </nz-select>
+      <ng-template #roleErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['required']">
+          ¡Por favor seleccione un rol!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="7">Foto de Perfil</nz-form-label>
+    <nz-form-control [nzSpan]="12">
+      <input type="file" (change)="onFileChange($event)" accept="image/*" />
+      <ng-container *ngIf="selectedFilePreview">
+        <img [src]="selectedFilePreview" alt="Foto de Perfil" style="max-width: 200px; margin-top: 10px" />
+      </ng-container>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control [nzOffset]="7" [nzSpan]="12">
+      <button nz-button nzType="primary" [disabled]="!addUserForm.valid"><span nz-icon nzType="plus"></span>Crear</button>
+      <button nz-button (click)="resetForm($event)">Restablecer</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
