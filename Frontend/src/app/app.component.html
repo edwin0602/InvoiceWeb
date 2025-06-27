@@ -27,7 +27,7 @@
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header>
+    <nz-header style="background: #fff; padding: 0;">
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
           <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
@@ -52,7 +52,7 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>Invoicika ©2025</nz-footer>
+    <nz-footer style="text-align: center;">Invoicika ©2025</nz-footer>
   </nz-layout>
 </nz-layout>
 <router-outlet *ngIf="!authService.isAuthenticated()"></router-outlet>
