@@ -53,6 +53,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVATService, VATService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<IFileProvider>(
     new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads")));
 

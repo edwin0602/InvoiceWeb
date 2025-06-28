@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-import { environment } from '../../environments/environment'; // Import the environment
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
-  private apiUrl = environment.apiUrl + 'customers'; // Use the environment variable
+  private apiUrl = environment.apiUrl + 'customers';
 
   constructor(private http: HttpClient) { }
 
@@ -59,4 +59,15 @@ export class CustomerService {
     ]);
   }
 
+  deleteCustomerFile(customerId: string, fileId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${customerId}/files/${fileId}`);
+  }
+
+  uploadCustomerFile(customerId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileType', 'support');
+
+    return this.http.post<any>(`${this.apiUrl}/${customerId}/files`, formData);
+  }
 }

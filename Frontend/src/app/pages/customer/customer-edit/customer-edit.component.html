@@ -2,11 +2,7 @@
   <nz-spin nzSimple></nz-spin>
 </div>
 <div *ngIf="!loading">
-  <nz-page-header
-    class="site-page-header"
-    (nzBack)="onBack()"
-    nzBackIcon
-    nzTitle="Editar Cliente">
+  <nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Editar Cliente">
   </nz-page-header>
 
   <form nz-form [formGroup]="editCustomerForm" (ngSubmit)="submitForm()">
@@ -39,7 +35,8 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address">Dirección</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <textarea nz-input formControlName="address" id="address" rows="3" placeholder="Ingrese la dirección"></textarea>
+        <textarea nz-input formControlName="address" id="address" rows="3"
+          placeholder="Ingrese la dirección"></textarea>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -72,11 +69,25 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="creationDate">Adjuntos</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-upload class="upload-list-inline" nzListType="picture" [(nzFileList)]="customerFiles"
+          [nzBeforeUpload]="beforeUpload" [nzLimit]="20" [nzAccept]="'.png,.jpg,.jpeg,.gif,.bmp,.webp,.pdf'"
+          [nzRemove]="onRemoveFile">
+          <button nz-button type="button">
+            <span>
+              <nz-icon nzType="upload"></nz-icon>
+              Asociar adjunto
+            </span>
+          </button>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
       <nz-form-control [nzSm]="14" [nzXs]="24" [nzOffset]="6">
         <button nz-button nzType="primary" [disabled]="!editCustomerForm.valid">
           <span nz-icon nzType="edit"></span>Editar
         </button>
-        <button nz-button (click)="resetForm($event)">Restablecer</button>
       </nz-form-control>
     </nz-form-item>
   </form>

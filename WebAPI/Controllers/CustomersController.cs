@@ -77,12 +77,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("{customerId}/files")]
-        public async Task<IActionResult> AddFileToCustomer(Guid customerId, [FromBody] CustomerFileDto fileDto)
+        public async Task<IActionResult> AddFileToCustomer(Guid customerId, [FromForm] IFormFile file, [FromForm] string fileType)
         {
-            if (fileDto == null)
-                return BadRequest();
+            if (file == null || file.Length == 0)
+                return BadRequest("Archivo no válido.");
 
-            await _customerService.AddFileToCustomerAsync(customerId, fileDto);
+            await _customerService.AddFileToCustomerAsync(customerId, file, fileType);
             return Ok();
         }
 

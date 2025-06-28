@@ -19,6 +19,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { SharedModule } from '../../shared/shared.module';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzUploadComponent } from 'ng-zorro-antd/upload';
 
 
 @NgModule({
@@ -45,6 +47,8 @@ import { SharedModule } from '../../shared/shared.module';
     NzSpinModule,
     FormsModule,
     NzModalModule,
+    NzCardModule,
+    NzUploadComponent,
     SharedModule
 ]
 })

@@ -105,6 +105,24 @@ namespace WebAPI.Controllers
             }
         }
 
-    }
+        [HttpPost("{invoiceId}/files")]
+        public async Task<IActionResult> AddFileToInvoice(Guid invoiceId, [FromForm] IFormFile file, [FromForm] string fileType)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Archivo no válido.");
 
+            await _service.AddFileToInvoiceAsync(invoiceId, file, fileType);
+            return Ok();
+        }
+
+        [HttpPut("{invoiceId}/files/{fileId}/status")]
+        public async Task<IActionResult> UpdateInvoiceFileStatus(Guid invoiceId, Guid fileId, [FromBody] string newStatus)
+        {
+            if (string.IsNullOrWhiteSpace(newStatus))
+                return BadRequest("Status is required.");
+
+            await _service.UpdateInvoiceFileStatusAsync(invoiceId, fileId, newStatus);
+            return NoContent();
+        }
+    }
 }

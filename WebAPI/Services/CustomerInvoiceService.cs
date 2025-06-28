@@ -1,16 +1,12 @@
-﻿using WebAPI.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WebAPI.Dtos;
 using WebAPI.Data;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using QuestPDF.Helpers;
-using System.Globalization;
+using WebAPI.Helpers;
 using MailKit.Security;
 using MimeKit;
 using MailKit.Net.Smtp;
 using WebAPI.Common.Constants;
-
+using WebAPI.Models;
 
 namespace WebAPI.Services
 {
@@ -23,18 +19,24 @@ namespace WebAPI.Services
         Task DeleteCustomerInvoiceAsync(Guid id);
         Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId);
         Task SendInvoiceEmailAsync(Guid invoiceId);
-
+        Task AddFileToInvoiceAsync(Guid invoiceId, IFormFile file, string fileType);
+        Task UpdateInvoiceFileStatusAsync(Guid invoiceId, Guid fileId, string newStatus);
     }
 
     public class CustomerInvoiceService : ICustomerInvoiceService
     {
         private readonly InvoicikaDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IFileService _fileService;
 
-        public CustomerInvoiceService(InvoicikaDbContext context, IConfiguration configuration)
+        public CustomerInvoiceService(
+            InvoicikaDbContext context,
+            IConfiguration configuration,
+            IFileService fileService)
         {
             _context = context;
             _configuration = configuration;
+            _fileService = fileService;
         }
 
         public async Task<CustomerInvoiceDto> GetCustomerInvoiceByIdAsync(Guid id)
@@ -43,37 +45,15 @@ namespace WebAPI.Services
                 .Include(c => c.Customer)
                 .Include(c => c.User)
                 .Include(c => c.VAT)
-                .Include(c => c.CustomerInvoiceLines)
-                .ThenInclude(l => l.Item)
+                .Include(c => c.CustomerInvoiceLines).ThenInclude(l => l.Item)
+                .Include(c => c.CustomerInvoiceFiles)
+                .Include(c => c.CustomerInvoiceNotes)
                 .FirstOrDefaultAsync(c => c.CustomerInvoiceId == id);
 
-            // Map to DTO (consider using AutoMapper)
-            return new CustomerInvoiceDto
-            {
-                CustomerInvoiceId = invoice.CustomerInvoiceId,
-                Status = invoice.Status,
-                InvoiceType = invoice.InvoiceType,
-                Customer_id = invoice.Customer_id,
-                User_id = invoice.User_id,
-                InvoiceDate = invoice.InvoiceDate,
-                ExpirationDate = invoice.ExpirationDate,
-                CreationDate = invoice.CreationDate,
-                UpdateDate = invoice.UpdateDate,
-                SubTotalAmount = invoice.SubTotalAmount,
-                VatAmount = invoice.VatAmount,
-                TotalAmount = invoice.TotalAmount,
-                Vat_id = invoice.Vat_id,
-                CustomerInvoiceLines = invoice.CustomerInvoiceLines.Select(l => new CustomerInvoiceLineDto
-                {
-                    InvoiceLineId = l.InvoiceLineId,
-                    CustomerInvoice_id = l.CustomerInvoice_id,
-                    Item_id = l.Item_id,
-                    ItemName = l.Item.Name,
-                    ItemDescription = l.Item.Description,
-                    Quantity = l.Quantity,
-                    Price = l.Price
-                }).ToList()
-            };
+            if (invoice == null)
+                return null;
+
+            return CustomerInvoiceMapper.ToDto(invoice);
         }
 
         public async Task<IEnumerable<CustomerInvoiceDto>> GetAllCustomerInvoicesAsync()
@@ -82,83 +62,27 @@ namespace WebAPI.Services
                 .Include(c => c.Customer)
                 .Include(c => c.User)
                 .Include(c => c.VAT)
-                .Include(c => c.CustomerInvoiceLines)
-                .ThenInclude(l => l.Item)
+                .Include(c => c.CustomerInvoiceLines).ThenInclude(l => l.Item)
+                .Include(c => c.CustomerInvoiceFiles)
                 .ToListAsync();
 
-            // Map to DTOs (consider using AutoMapper)
-            return invoices.Select(invoice => new CustomerInvoiceDto
-            {
-                CustomerInvoiceId = invoice.CustomerInvoiceId,
-                Status = invoice.Status,
-                InvoiceType = invoice.InvoiceType,
-                Customer_id = invoice.Customer_id,
-                User_id = invoice.User_id,
-                InvoiceDate = invoice.InvoiceDate,
-                ExpirationDate = invoice.ExpirationDate,
-                CreationDate = invoice.CreationDate,
-                UpdateDate = invoice.UpdateDate,
-                SubTotalAmount = invoice.SubTotalAmount,
-                VatAmount = invoice.VatAmount,
-                TotalAmount = invoice.TotalAmount,
-                Vat_id = invoice.Vat_id,
-                CustomerInvoiceLines = invoice.CustomerInvoiceLines.Select(l => new CustomerInvoiceLineDto
-                {
-                    InvoiceLineId = l.InvoiceLineId,
-                    CustomerInvoice_id = l.CustomerInvoice_id,
-                    Item_id = l.Item_id,
-                    ItemName = l.Item.Name,
-                    ItemDescription = l.Item.Description,
-                    Quantity = l.Quantity,
-                    Price = l.Price
-                }).ToList()
-            });
+            return invoices.Select(CustomerInvoiceMapper.ToDto);
         }
 
         public async Task CreateCustomerInvoiceAsync(CustomerInvoiceDto dto)
         {
-            var invoice = new CustomerInvoice
-            {
-                CustomerInvoiceId = dto.CustomerInvoiceId,
-                InvoiceType = dto.InvoiceType,
-                Customer_id = dto.Customer_id,
-                User_id = dto.User_id,
-                Vat_id = dto.Vat_id,
-                InvoiceDate = dto.InvoiceDate,
-                ExpirationDate = dto.ExpirationDate,
-                CreationDate = dto.CreationDate,
-                UpdateDate = dto.UpdateDate,
-                SubTotalAmount = dto.SubTotalAmount,
-                VatAmount = dto.VatAmount,
-                TotalAmount = dto.TotalAmount,
-                Status = InvoiceStatuses.Created,
-                CustomerInvoiceLines = dto.CustomerInvoiceLines.Select(l => new CustomerInvoiceLine
-                {
-                    InvoiceLineId = l.InvoiceLineId,
-                    CustomerInvoice_id = l.CustomerInvoice_id,
-                    Item_id = l.Item_id,
-                    Quantity = l.Quantity,
-                    Price = l.Price
-                }).ToList()
-            };
+            var invoice = CustomerInvoiceMapper.ToModel(dto);
+            invoice.Status = InvoiceStatuses.Created;
 
             _context.CustomerInvoices.Add(invoice);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                // Handle exception or log detailed error information here
-                throw;
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateCustomerInvoiceAsync(Guid id, CustomerInvoiceDto updatedInvoice)
         {
             var existingInvoice = await _context.CustomerInvoices
                 .Include(i => i.CustomerInvoiceLines)
+                .Include(i => i.CustomerInvoiceFiles)
                 .FirstOrDefaultAsync(i => i.CustomerInvoiceId == id);
 
             if (existingInvoice == null) return false;
@@ -167,24 +91,18 @@ namespace WebAPI.Services
             existingInvoice.User_id = updatedInvoice.User_id;
             existingInvoice.InvoiceDate = updatedInvoice.InvoiceDate;
             existingInvoice.ExpirationDate = updatedInvoice.ExpirationDate;
-            existingInvoice.UpdateDate = DateTime.UtcNow; //
+            existingInvoice.UpdateDate = DateTime.UtcNow;
             existingInvoice.SubTotalAmount = updatedInvoice.SubTotalAmount;
             existingInvoice.VatAmount = updatedInvoice.VatAmount;
             existingInvoice.TotalAmount = updatedInvoice.TotalAmount;
             existingInvoice.Vat_id = updatedInvoice.Vat_id;
+            existingInvoice.Status = updatedInvoice.Status;
+            existingInvoice.InvoiceType = updatedInvoice.InvoiceType;
 
-            // Update invoice lines
-            existingInvoice.CustomerInvoiceLines.Clear(); //
-            foreach (var line in updatedInvoice.CustomerInvoiceLines)
+            existingInvoice.CustomerInvoiceLines.Clear();
+            foreach (var lineDto in updatedInvoice.CustomerInvoiceLines)
             {
-                existingInvoice.CustomerInvoiceLines.Add(new CustomerInvoiceLine
-                {
-                    InvoiceLineId = line.InvoiceLineId,
-                    CustomerInvoice_id = line.CustomerInvoice_id,
-                    Item_id = line.Item_id,
-                    Quantity = line.Quantity,
-                    Price = line.Price
-                });
+                existingInvoice.CustomerInvoiceLines.Add(CustomerInvoiceMapper.ToModel(lineDto));
             }
 
             await _context.SaveChangesAsync();
@@ -201,212 +119,56 @@ namespace WebAPI.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId)
+        public async Task AddFileToInvoiceAsync(Guid invoiceId, IFormFile file, string fileType)
         {
             var invoice = await _context.CustomerInvoices
-            .Include(c => c.Customer)
-            .Include(c => c.User)
-            .Include(c => c.VAT)
-            .Include(c => c.CustomerInvoiceLines)
-            .ThenInclude(l => l.Item)
-            .FirstOrDefaultAsync(c => c.CustomerInvoiceId == invoiceId);
+                .Include(i => i.CustomerInvoiceFiles)
+                .FirstOrDefaultAsync(i => i.CustomerInvoiceId == invoiceId);
 
             if (invoice == null)
-            {
-                throw new ArgumentException("Invoice not found", nameof(invoiceId));
-            }
+                throw new KeyNotFoundException("Invoice not found");
 
-            var companyInfo = new
+            var category = Path.Combine("invoice", invoiceId.ToString());
+            var relativePath = await _fileService.SaveFileAsync(file, category);
+
+            var invoiceFile = new CustomerInvoiceFile
             {
-                CompanyName = "Invoicika Inc.",
-                Address = "456 Business Road, Metropolis",
-                Email = "info@invoicika.com",
-                PhoneNumbers = new[] { "555-1010", "555-1020", "555-3030" }
+                CustomerInvoiceFileId = Guid.NewGuid(),
+                Status = Common.Constants.GeneralStatuses.Active,
+                CustomerInvoiceId = invoiceId,
+                FileName = file.FileName,
+                FilePath = relativePath,
+                FileType = fileType,
+                CreationDate = DateTime.UtcNow
             };
 
-            var customerInfo = new
-            {
-                Name = invoice.Customer.Name,
-                Address = invoice.Customer.Address,
-                Email = invoice.Customer.Email,
-                Phone = invoice.Customer.PhoneNumber
-            };
+            invoice.CustomerInvoiceFiles.Add(invoiceFile);
+            await _context.SaveChangesAsync();
+        }
 
-            var invoiceDetails = new
-            {
-                InvoiceNumber = invoice.CustomerInvoiceId.ToString(),
-                InvoiceDate = invoice.InvoiceDate.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture),
-                InvoiceStatus = invoice.Status,
-                InvoiceType = invoice.InvoiceType
-            };
+        public async Task UpdateInvoiceFileStatusAsync(Guid invoiceId, Guid fileId, string newStatus)
+        {
+            var invoice = await _context.CustomerInvoices
+                .Include(i => i.CustomerInvoiceFiles)
+                .FirstOrDefaultAsync(i => i.CustomerInvoiceId == invoiceId);
 
-            var vatPercentage = invoice.VAT.Percentage;
-            // Calculations for subtotal, VAT, and total
-            var subTotal = invoice.SubTotalAmount;
-            var vat = subTotal * (invoice.VatAmount / 100);
-            var total = invoice.TotalAmount;
+            if (invoice == null)
+                throw new KeyNotFoundException("Invoice not found");
 
-            var document = Document.Create(container =>
-            {
-                container.Page(page =>
-                {
-                    page.Size(PageSizes.A4);
-                    page.Margin(1, Unit.Centimetre);
-                    page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x.FontSize(9));
+            var file = invoice.CustomerInvoiceFiles.FirstOrDefault(f => f.CustomerInvoiceFileId == fileId);
+            if (file == null)
+                throw new KeyNotFoundException("Invoice file not found");
 
-                    page.Header().Row(row =>
-                    {
-                        row.ConstantItem(20).Image("wwwroot/uploads/invoicika.png").FitArea();
-                        row.RelativeItem().Column(column =>
-                        {
-                            column.Item().Text(companyInfo.CompanyName).Bold().FontSize(18).AlignLeft();
-                        });
-                    });
+            file.Status = newStatus;
+            file.UpdateDate = DateTime.UtcNow;
 
-                    page.Content().PaddingVertical(20).Column(column =>
-                    {
-
-                        column.Item().Row(row =>
-                        {
-                            row.RelativeItem().Column(columnLeft =>
-                            {
-                                columnLeft.Item().Text("From").Bold().FontSize(10).FontColor(Colors.Blue.Darken2);
-                                columnLeft.Item().Text($"{companyInfo.CompanyName}").Bold().FontSize(12);
-                                columnLeft.Item().Text($"{companyInfo.Address}");
-                                columnLeft.Item().Text($"{companyInfo.Email}");
-                                foreach (var phone in companyInfo.PhoneNumbers)
-                                {
-                                    columnLeft.Item().Text($"{phone}");
-                                }
-                            });
-
-                            row.RelativeItem().Column(columnRight =>
-                            {
-                                columnRight.Item().Text("To").Bold().FontSize(10).FontColor(Colors.Blue.Darken2);
-                                columnRight.Item().Text($"{customerInfo.Name}").Bold().FontSize(12);
-                                columnRight.Item().Text($"{customerInfo.Address}");
-                                columnRight.Item().Text($"{customerInfo.Email}");
-                                columnRight.Item().Text($"{customerInfo.Phone}");
-                            });
-
-                            row.RelativeItem().Column(columnRight =>
-                            {
-                                columnRight.Item().Text("Invoice Number").Bold().FontSize(10).FontColor(Colors.Blue.Darken2);
-                                columnRight.Item().PaddingBottom(5).Text($"{invoiceDetails.InvoiceNumber}").Bold().FontSize(9);
-                                columnRight.Item().Text($"{invoiceDetails.InvoiceDate}");
-                            });
-                        });
-
-
-                        column.Item().PaddingTop(5).PaddingBottom(15).LineHorizontal(1).LineColor(Colors.Blue.Medium);
-                        column.Item().Table(table =>
-                        {
-
-                            table.ColumnsDefinition(columns =>
-                            {
-                                columns.ConstantColumn(100);
-                                columns.RelativeColumn(180);
-                                columns.RelativeColumn(40);
-                                columns.RelativeColumn(60);
-                                columns.RelativeColumn(70);
-                            });
-
-                            table.Header(header =>
-                            {
-                                header.Cell().Element(CellStyle).Text("Item Name");
-                                header.Cell().Element(CellStyle).Text("Description");
-                                header.Cell().Element(CellStyle).AlignRight().Text("Quantity");
-                                header.Cell().Element(CellStyle).AlignRight().Text("Unit Price");
-                                header.Cell().Element(CellStyle).AlignRight().Text("Total");
-
-                                static IContainer CellStyle(IContainer container)
-                                {
-                                    return container.DefaultTextStyle(x => x.Bold()).PaddingTop(10).Background(Colors.Blue.Lighten2);
-                                }
-                            });
-
-                            foreach (var line in invoice.CustomerInvoiceLines)
-                            {
-                                table.Cell().Element(CellStyle).Text(line.Item.Name);
-                                table.Cell().Element(CellStyle).Text(line.Item.Description);
-                                table.Cell().Element(CellStyle).AlignRight().Text(line.Quantity.ToString("N0", CultureInfo.InvariantCulture));
-                                table.Cell().Element(CellStyle).AlignRight().Text($"{line.Price.ToString("F2", CultureInfo.InvariantCulture)}$");
-                                table.Cell().Element(CellStyle).AlignRight().Text($"{(line.Price * line.Quantity).ToString("F2", CultureInfo.InvariantCulture)}$");
-
-                                static IContainer CellStyle(IContainer container)
-                                {
-                                    return container.BorderBottom(1).BorderColor(Colors.Blue.Lighten2).PaddingVertical(3);
-                                }
-                            }
-                        });
-
-                        // Add Subtotal, VAT, and Total section at the bottom
-                        column.Item().Table(table =>
-                        {
-                            // Define two columns: Labels and Values
-                            table.ColumnsDefinition(columns =>
-                            {
-                                columns.ConstantColumn(100);
-                                columns.RelativeColumn(180);
-                                columns.RelativeColumn(40);
-                                columns.RelativeColumn(60);
-                                columns.RelativeColumn(70);
-                            });
-
-                            table.Cell().ColumnSpan(4).Element(LabelCellStyle).Text("Subtotal");
-                            table.Cell().Element(ValueCellStyle).AlignRight().Text($"{subTotal.ToString("F2", CultureInfo.InvariantCulture)}$");
-
-                            table.Cell().ColumnSpan(4).Element(LabelCellStyle).Text($"VAT ({vatPercentage}%)");
-                            table.Cell().Element(ValueCellStyle).AlignRight().Text($"{vat.ToString("F2", CultureInfo.InvariantCulture)}$");
-
-                            table.Cell().ColumnSpan(4).Element(LabelCellStyle).Text("Grand Total").FontColor(Colors.Blue.Darken2).Bold().FontSize(12);
-                            table.Cell().Element(ValueCellStyle).AlignRight().Text($"{total.ToString("F2", CultureInfo.InvariantCulture)}$").FontColor(Colors.Blue.Darken2).Bold().FontSize(12);
-
-                            static IContainer LabelCellStyle(IContainer container)
-                            {
-                                return container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).AlignRight();
-                            }
-
-                            static IContainer ValueCellStyle(IContainer container)
-                            {
-                                return container.DefaultTextStyle(x => x.Bold()).PaddingVertical(5);
-                            }
-                        });
-                    });
-
-                    page.Footer().AlignCenter().Column(column =>
-                    {
-                        column.Item().PaddingTop(10).LineHorizontal(1).LineColor(Colors.Grey.Medium);
-                        column.Spacing(2);
-                        column.Item().Text("This computer-generated document is valid without signature.").AlignCenter();
-                    });
-                });
-            });
-
-            using (var stream = new MemoryStream())
-            {
-                document.GeneratePdf(stream);
-                return await Task.FromResult(stream.ToArray());
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task SendInvoiceEmailAsync(Guid invoiceId)
         {
-            var invoiceDto = await GetCustomerInvoiceByIdAsync(invoiceId);
-
-            if (invoiceDto == null)
-            {
-                throw new Exception("Invoice not found.");
-            }
-
-            var customer = await _context.Customers.FindAsync(invoiceDto.Customer_id);
-
-            if (customer == null)
-            {
-                throw new Exception("Customer not found.");
-            }
-
+            var invoiceDto = await GetCustomerInvoiceByIdAsync(invoiceId) ?? throw new Exception("Invoice not found.");
+            var customer = await _context.Customers.FindAsync(invoiceDto.Customer_id) ?? throw new Exception("Customer not found.");
             var pdfBytes = await GenerateInvoicePdfAsync(invoiceId);
 
             // Get email configuration from app settings
@@ -443,24 +205,36 @@ namespace WebAPI.Services
             message.Body = bodyBuilder.ToMessageBody();
 
             // Send the email via SMTP
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient();
+            try
             {
-                try
-                {
-                    await client.ConnectAsync(smtpServer, smtpPort, SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync(senderEmail, senderPassword);
+                await client.ConnectAsync(smtpServer, smtpPort, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(senderEmail, senderPassword);
 
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error sending email: {ex.Message}");
-                }
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error sending email: {ex.Message}");
             }
         }
 
-    }
+        public async Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId)
+        {
+            var invoice = await _context.CustomerInvoices
+                .Include(c => c.Customer)
+                .Include(c => c.User)
+                .Include(c => c.VAT)
+                .Include(c => c.CustomerInvoiceLines)
+                .ThenInclude(l => l.Item)
+                .FirstOrDefaultAsync(c => c.CustomerInvoiceId == invoiceId);
 
+            if (invoice == null)
+                throw new ArgumentException("Invoice not found", nameof(invoiceId));
+
+            return InvoicePdfGenerator.Generate(invoice);
+        }
+    }
 }
 

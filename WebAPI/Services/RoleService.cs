@@ -12,6 +12,7 @@ namespace WebAPI.Services
         Task UpdateRoleAsync(Role role);
         Task DeleteRoleAsync(Guid id);
     }
+
     public class RoleService : IRoleService
     {
         private readonly InvoicikaDbContext _context;

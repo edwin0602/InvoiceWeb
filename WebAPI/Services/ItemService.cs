@@ -13,6 +13,7 @@ namespace WebAPI.Services
         Task UpdateItemAsync(Item item);
         Task DeleteItemAsync(Guid id);
     }
+
     public class ItemService : IItemService
     {
         private readonly InvoicikaDbContext _context;
@@ -75,6 +76,6 @@ namespace WebAPI.Services
             }
         }
     }
- }
+}
 
 

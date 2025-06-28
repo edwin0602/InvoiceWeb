@@ -14,17 +14,19 @@ namespace WebAPI.Services
         Task AddCustomerAsync(CustomerDto customerDto);
         Task UpdateCustomerAsync(CustomerDto customerDto);
         Task DeleteCustomerAsync(Guid id);
-        Task AddFileToCustomerAsync(Guid customerId, CustomerFileDto fileDto);
+        Task AddFileToCustomerAsync(Guid customerId, IFormFile file, string fileType);
         Task UpdateCustomerFileStatusAsync(Guid customerId, Guid customerFileId, string newStatus);
     }
 
     public class CustomerService : ICustomerService
     {
         private readonly InvoicikaDbContext _context;
+        private readonly IFileService _fileService;
 
-        public CustomerService(InvoicikaDbContext context)
+        public CustomerService(InvoicikaDbContext context, IFileService fileService)
         {
             _context = context;
+            _fileService = fileService;
         }
 
         public async Task<PaginationResult<CustomerDto>> GetCustomersPagedAndSortedAsync(string? searchTerm, int pageNumber, int pageSize)
@@ -46,7 +48,7 @@ namespace WebAPI.Services
                 .Take(pageSize)
                 .ToListAsync();
 
-            var customerDtos = customers.Select(MapToCustomerDto);
+            var customerDtos = customers.Select(CustomerMapper.ToDto);
 
             return new PaginationResult<CustomerDto>(customerDtos, totalCount, pageNumber, pageSize);
         }
@@ -57,12 +59,12 @@ namespace WebAPI.Services
                 .Include(c => c.CustomerFiles)
                 .FirstOrDefaultAsync(i => i.CustomerId == id);
 
-            return customer == null ? null : MapToCustomerDto(customer);
+            return customer == null ? null : CustomerMapper.ToDto(customer);
         }
 
         public async Task AddCustomerAsync(CustomerDto customerDto)
         {
-            var customer = MapToCustomer(customerDto);
+            var customer = CustomerMapper.ToModel(customerDto);
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
         }
@@ -96,7 +98,7 @@ namespace WebAPI.Services
             }
         }
 
-        public async Task AddFileToCustomerAsync(Guid customerId, CustomerFileDto fileDto)
+        public async Task AddFileToCustomerAsync(Guid customerId, IFormFile file, string fileType)
         {
             var customer = await _context.Customers
                 .Include(c => c.CustomerFiles)
@@ -105,16 +107,18 @@ namespace WebAPI.Services
             if (customer == null)
                 throw new KeyNotFoundException("Customer not found");
 
+            var category = Path.Combine("customers", customerId.ToString());
+            var relativePath = await _fileService.SaveFileAsync(file, category);
+
             var customerFile = new CustomerFile
             {
                 CustomerFileId = Guid.NewGuid(),
                 Status = GeneralStatuses.Active,
                 CustomerId = customerId,
-                FileName = fileDto.FileName,
-                FilePath = fileDto.FilePath,
-                FileType = fileDto.FileType,
-                CreationDate = fileDto.CreationDate != default ? fileDto.CreationDate : DateTime.UtcNow,
-                UpdateDate = fileDto.UpdateDate
+                FileName = file.FileName,
+                FilePath = relativePath,
+                FileType = fileType,
+                CreationDate = DateTime.UtcNow
             };
 
             customer.CustomerFiles.Add(customerFile);
@@ -139,47 +143,6 @@ namespace WebAPI.Services
             customerFile.UpdateDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-        }
-
-        private CustomerDto MapToCustomerDto(Customer customer)
-        {
-            return new CustomerDto
-            {
-                CustomerId = customer.CustomerId,
-                Name = customer.Name,
-                Address = customer.Address,
-                PhoneNumber = customer.PhoneNumber,
-                Email = customer.Email,
-                Status = customer.Status,
-                CreationDate = customer.CreationDate,
-                UpdateDate = customer.UpdateDate,
-                CustomerFiles = customer.CustomerFiles?
-                    .Select(f => new CustomerFileDto
-                    {
-                        CustomerFileId = f.CustomerFileId,
-                        FileName = f.FileName,
-                        FilePath = f.FilePath,
-                        FileType = f.FileType,
-                        Status = f.Status,
-                        CreationDate = f.CreationDate,
-                        UpdateDate = f.UpdateDate
-                    }).ToList() ?? new List<CustomerFileDto>()
-            };
-        }
-
-        private Customer MapToCustomer(CustomerDto dto)
-        {
-            return new Customer
-            {
-                CustomerId = dto.CustomerId,
-                Name = dto.Name,
-                Address = dto.Address,
-                PhoneNumber = dto.PhoneNumber,
-                Email = dto.Email,
-                Status = dto.Status ?? GeneralStatuses.Active,
-                CreationDate = dto.CreationDate,
-                UpdateDate = dto.UpdateDate
-            };
         }
     }
 }

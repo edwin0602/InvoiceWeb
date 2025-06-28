@@ -53,6 +53,10 @@ public class CustomerInvoice
 
     public virtual ICollection<CustomerInvoiceLine> CustomerInvoiceLines { get; set; } = new List<CustomerInvoiceLine>();
 
+    public virtual ICollection<CustomerInvoiceFile> CustomerInvoiceFiles { get; set; } = new List<CustomerInvoiceFile>();
+
+    public virtual ICollection<CustomerInvoiceNote> CustomerInvoiceNotes { get; set; } = new List<CustomerInvoiceNote>();
+
     [Required]
     public Guid Vat_id { get; set; }
 
