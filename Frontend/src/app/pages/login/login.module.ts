@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { NzCardModule } from 'ng-zorro-antd/card';
     ReactiveFormsModule,
     NzButtonModule,
     NzInputModule,
-    NzCardModule
+    NzCardModule,
+    NzLayoutModule
   ]
 })
 export class LoginModule { }

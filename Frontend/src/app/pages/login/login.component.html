@@ -1,11 +1,18 @@
-<div class="parent-container">
-  <div class="container">
-    <nz-card>
-      <div class="logo">
-        <img src="assets/invoicika.svg" alt="logo" style="height: 100px;">
-        <h1>Invoicika</h1>
-      </div>
+<div class="login_main">
+  <div class="login_box">
+    <div class="left">
+      <span class="logo_container">
+        <img data-v-dfb96b82="" src="../../../assets/icon/logo.svg" alt="logo" class="logo">
+      </span>
+      <span class="title">Invoicika</span>
+      <span class="about">Plataforma integral de facturación electrónica y gestión de clientes, diseñada para pequeñas y
+        medianas empresas.</span>
+    </div>
+    <div class="right">
       <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+        <div class="form-header">
+          <h2 nz-typography>Bienvenido!</h2>
+        </div>
         <nz-form-item>
           <nz-form-control nzErrorTip="¡Por favor ingrese su usuario!">
             <nz-input-group nzPrefixIcon="user">
@@ -20,14 +27,19 @@
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
-        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Iniciar sesión</button>
-        o
-        <a>¡Regístrate ahora!</a>
+        <div nz-row class="login-form-margin">
+          <div nz-col [nzSpan]="12">
+            <label nz-checkbox formControlName="remember">
+              <span>¡Regístrate!</span>
+            </label>
+          </div>
+          <div nz-col [nzSpan]="12">
+            <a class="login-form-forgot">¿Olvidaste tu contraseña?</a>
+          </div>
+        </div>
+        <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'" nzSize="large"
+          [disabled]="validateForm.invalid">Iniciar sesión</button>
       </form>
-    </nz-card>
+    </div>
   </div>
 </div>
-
-
-
-

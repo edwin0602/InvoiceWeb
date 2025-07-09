@@ -11,6 +11,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
     standalone: false
 })
 export class LoginComponent {
+  passwordVisible: boolean = false;
   validateForm: FormGroup = new FormGroup({
     userName: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
