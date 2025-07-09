@@ -1,7 +1,8 @@
-.line-item-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px; /* Adjust the spacing between input boxes */
+.no-horizontal-padding .ant-form-item-control-input,
+.no-horizontal-padding .ant-form-item-control,
+.no-horizontal-padding .ant-form-item-label {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .line-item-total {
@@ -50,10 +51,28 @@
   margin-bottom: 0;
 }
 
-.spinner-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px; // Adjust height as needed
-  width: 100%;
+.ant-page-header {
+  padding: 16px 0px;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 200px;
+  margin-right: 8px;
+}
+
+:host
+  ::ng-deep
+  .upload-list-inline
+  [class*="-upload-list-rtl"]
+  .ant-upload-list-item {
+  float: right;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
 }

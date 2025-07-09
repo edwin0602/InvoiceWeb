@@ -15,18 +15,42 @@ namespace WebAPI.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<VAT> VATs { get; set; }
-
+        public DbSet<CustomerFile> CustomerFiles { get; set; }
+        public DbSet<CustomerInvoiceFile> CustomerInvoiceFiles { get; set; }
+        public DbSet<CustomerInvoiceNote> CustomerInvoiceNotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Evita borrado en cascada de CustomerFiles al eliminar un Customer
+            modelBuilder.Entity<CustomerFile>()
+                .HasOne(cf => cf.Customer)
+                .WithMany(c => c.CustomerFiles)
+                .HasForeignKey(cf => cf.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Evita borrado en cascada de CustomerInvoiceFiles al eliminar un CustomerInvoice
+            modelBuilder.Entity<CustomerInvoiceFile>()
+                .HasOne(cif => cif.CustomerInvoice)
+                .WithMany(ci => ci.CustomerInvoiceFiles)
+                .HasForeignKey(cif => cif.CustomerInvoiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Evita borrado en cascada de CustomerInvoiceNotes al eliminar un CustomerInvoice
+            modelBuilder.Entity<CustomerInvoiceNote>()
+                .HasOne(cif => cif.CustomerInvoice)
+                .WithMany(ci => ci.CustomerInvoiceNotes)
+                .HasForeignKey(cif => cif.CustomerInvoiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Ya existente: evita borrado en cascada de CustomerInvoiceLine al eliminar un Item
             modelBuilder.Entity<CustomerInvoiceLine>()
                 .HasOne(cil => cil.Item)
                 .WithMany(i => i.CustomerInvoiceLines)
                 .HasForeignKey(cil => cil.Item_id)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete, keeps foreign key reference intact
-        }
+                .OnDelete(DeleteBehavior.Restrict);
 
+        }
     }
 }

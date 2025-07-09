@@ -3,9 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CustomerService } from 'src/app/services/customer.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { DomSanitizer } from '@angular/platform-browser';
-import { NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
-import { Observable, of, Subscription } from 'rxjs';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-customer-edit',
@@ -18,8 +17,7 @@ export class CustomerEditComponent implements OnInit {
   customerId!: string;
   loading = true;
   statusesList: any[] = [];
-  customerFiles: NzUploadFile[] = [];
-  customerFileList: NzUploadFile[] = [];
+  customerFiles: any[] = [];
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -43,14 +41,15 @@ export class CustomerEditComponent implements OnInit {
     this.loadCustomerStatus();
     this.customerId = this.route.snapshot.paramMap.get('customerId')!;
     this.customerService.getCustomerById(this.customerId).subscribe((customer) => {
-      this.customerFileList = (customer.customerFiles || []).map((file: any) => ({
-        uid: file.id ? file.id.toString() : (file.uid ? file.uid.toString() : ''),
-        name: file.name || 'archivo',
+      this.customerFiles = (customer.customerFiles || []).map((file: any) => ({
+        uid: file.customerFileId,
+        name: file.fileName,
         status: 'done',
-        url: file.url,
-        id: file.id,
-        type: file.type || '',
-        size: file.size || 0
+        url: file.filePath,
+        customerFileId: file.customerFileId,
+        fileType: file.fileType,
+        creationDate: file.creationDate,
+        updateDate: file.updateDate
       }));
 
       this.editCustomerForm.patchValue({
@@ -80,11 +79,10 @@ export class CustomerEditComponent implements OnInit {
     });
   }
 
-  beforeUpload = (file: NzUploadFile & { rawFile?: File }): boolean => {
-    this.customerFiles = this.customerFiles.concat(file);
+  beforeUpload = (file: NzUploadFile): boolean => {
+    this.customerFiles = [...this.customerFiles, file];
     return false;
   };
-
 
   onRemoveFile = (file: NzUploadFile): Observable<boolean> => {
     if (!file.uid) {
@@ -113,25 +111,36 @@ export class CustomerEditComponent implements OnInit {
     });
   };
 
+  onDownloadFile = (file: NzUploadFile) => {
+    if (file.url) {
+      this.customerService.downloadCustomerFile(this.customerId, file.uid).subscribe(res => {
+        const blob = res.body!;
+        
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = file.name || 'archivo';
+        a.click();
+        
+        URL.revokeObjectURL(a.href);
+      });
+    } else {
+      this.message.info('El archivo aún no está disponible para descargar.');
+    }
+  };
+
   submitForm(): void {
     if (this.editCustomerForm.valid) {
       this.loading = true;
-      const filesToUpload = this.customerFiles;
-      console.log('Files to upload:', this.customerFiles);
 
-      this.customerFiles.forEach((file: any) => {
-        this.customerService.uploadCustomerFile(this.customerId, file as File);
-      });
-
+      const filesToUpload = this.customerFiles.filter(file => file.status !== 'done');
       if (filesToUpload.length > 0) {
         const uploadObservables = filesToUpload.map(file => {
-          return this.customerService.uploadCustomerFile(this.customerId, file.originFileObj as File);
+          const fileObj = file.originFileObj || file;
+          return this.customerService.uploadCustomerFile(this.customerId, fileObj);
         });
 
         Promise.all(uploadObservables.map(obs => obs.toPromise()))
-          .then(() => {
-            this.updateCustomer();
-          })
+          .then(() => { this.updateCustomer(); })
           .catch(() => {
             this.loading = false;
             this.message.error('Error subiendo archivos');

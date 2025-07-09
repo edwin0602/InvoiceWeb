@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using WebAPI.Dtos;
 using WebAPI.Services;
 
@@ -115,14 +116,30 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        [HttpPut("{invoiceId}/files/{fileId}/status")]
-        public async Task<IActionResult> UpdateInvoiceFileStatus(Guid invoiceId, Guid fileId, [FromBody] string newStatus)
+        [HttpDelete("{invoiceId}/files/{fileId}")]
+        public async Task<IActionResult> MarkCustomerFileAsDeleteAsync(Guid invoiceId, Guid fileId)
         {
-            if (string.IsNullOrWhiteSpace(newStatus))
-                return BadRequest("Status is required.");
-
-            await _service.UpdateInvoiceFileStatusAsync(invoiceId, fileId, newStatus);
+            await _service.MarkInvoiceFileAsDeleteAsync(invoiceId, fileId);
             return NoContent();
+        }
+
+        [HttpGet("{invoiceId}/files/{invoiceFileId}/download")]
+        public async Task<IActionResult> DownloadInvoiceFile(Guid invoiceId, Guid invoiceFileId)
+        {
+            var result = await _service.DownloadInvoiceFileAsync(invoiceId, invoiceFileId);
+            if (result == null)
+                return NotFound("Archivo no encontrado.");
+
+            if (!result.HasValue)
+                return NotFound("Archivo no encontrado.");
+
+            var (fileBytes, fileName) = result.Value;
+
+            var contentTypeProvider = new FileExtensionContentTypeProvider();
+            if (!contentTypeProvider.TryGetContentType(fileName, out var contentType))
+                contentType = "application/octet-stream";
+
+            return File(fileBytes, contentType, fileName);
         }
     }
 }

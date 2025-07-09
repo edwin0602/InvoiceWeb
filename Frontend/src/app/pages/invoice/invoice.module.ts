@@ -20,13 +20,14 @@ import { InvoiceShowComponent } from './invoice-show/invoice-show.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NzUploadComponent } from 'ng-zorro-antd/upload';
 
 @NgModule({
   declarations: [
     InvoiceListComponent,
     InvoiceAddComponent,
     InvoiceEditComponent,
-    InvoiceShowComponent
+    InvoiceShowComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +45,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     NzDatePickerModule,
     NzSpinModule,
     NzModalModule,
+    NzUploadComponent,
     SharedModule,
   ],
 })

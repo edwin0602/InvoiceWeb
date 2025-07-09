@@ -15,7 +15,8 @@ namespace WebAPI.Services
         Task UpdateCustomerAsync(CustomerDto customerDto);
         Task DeleteCustomerAsync(Guid id);
         Task AddFileToCustomerAsync(Guid customerId, IFormFile file, string fileType);
-        Task UpdateCustomerFileStatusAsync(Guid customerId, Guid customerFileId, string newStatus);
+        Task MarkCustomerFileAsDeleteAsync(Guid customerId, Guid customerFileId);
+        Task<(byte[] FileBytes, string FileName)?> DownloadCustomerFileAsync(Guid customerId, Guid customerFileId);
     }
 
     public class CustomerService : ICustomerService
@@ -56,7 +57,7 @@ namespace WebAPI.Services
         public async Task<CustomerDto?> GetCustomerByIdAsync(Guid id)
         {
             var customer = await _context.Customers
-                .Include(c => c.CustomerFiles)
+                .Include(c => c.CustomerFiles.Where(f => f.Status != GeneralStatuses.Deleted))
                 .FirstOrDefaultAsync(i => i.CustomerId == id);
 
             return customer == null ? null : CustomerMapper.ToDto(customer);
@@ -121,11 +122,11 @@ namespace WebAPI.Services
                 CreationDate = DateTime.UtcNow
             };
 
-            customer.CustomerFiles.Add(customerFile);
+            await _context.CustomerFiles.AddAsync(customerFile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateCustomerFileStatusAsync(Guid customerId, Guid customerFileId, string newStatus)
+        public async Task MarkCustomerFileAsDeleteAsync(Guid customerId, Guid customerFileId)
         {
             var customer = await _context.Customers
                 .Include(c => c.CustomerFiles)
@@ -139,10 +140,30 @@ namespace WebAPI.Services
             if (customerFile == null)
                 throw new KeyNotFoundException("Customer file not found");
 
-            customerFile.Status = newStatus;
+            customerFile.Status = GeneralStatuses.Deleted;
             customerFile.UpdateDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<(byte[] FileBytes, string FileName)?> DownloadCustomerFileAsync(Guid customerId, Guid customerFileId)
+        {
+            var customerFile = await _context.CustomerFiles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.CustomerFileId == customerFileId);
+
+            if (customerFile == null)
+                return null;
+
+            if (customerFile.CustomerId != customerId)
+                return null;
+
+            var relativePath = customerFile.FilePath.StartsWith("/uploads/")
+                ? customerFile.FilePath.Substring(9)
+                : customerFile.FilePath;
+
+            var fileBytes = await _fileService.GetFileAsync(relativePath);
+            return (fileBytes, customerFile.FileName);
         }
     }
 }

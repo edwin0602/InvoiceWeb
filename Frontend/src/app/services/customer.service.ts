@@ -63,6 +63,13 @@ export class CustomerService {
     return this.http.delete<void>(`${this.apiUrl}/${customerId}/files/${fileId}`);
   }
 
+  downloadCustomerFile(customerId: string, fileId: string) {
+    return this.http.get(`${this.apiUrl}/${customerId}/files/${fileId}/download`, {
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+
   uploadCustomerFile(customerId: string, file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);

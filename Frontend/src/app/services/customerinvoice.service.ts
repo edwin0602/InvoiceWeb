@@ -10,7 +10,7 @@ export class CustomerInvoiceService {
   private customersUrl = environment.apiUrl + 'customers'; // Customers API URL
   private usersUrl = environment.apiUrl + 'users'; // Users API URL
   private itemsUrl = environment.apiUrl + 'items'; // Users API URL
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCustomerInvoices(
     pageNumber: number,
@@ -90,10 +90,30 @@ export class CustomerInvoiceService {
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.usersUrl).pipe(catchError(() => of([])));
   }
+
   getItems(): Observable<any[]> {
     return this.http.get<any[]>(this.itemsUrl).pipe(catchError(() => of([])));
   }
-  
+
+  deleteInvoiceFile(invoiceId: string, fileId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${invoiceId}/files/${fileId}`);
+  }
+
+  downloadInvoiceFile(invoiceId: string, fileId: string) {
+    return this.http.get(`${this.apiUrl}/${invoiceId}/files/${fileId}/download`, {
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+
+  uploadInvoiceFile(invoiceId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileType', 'support');
+
+    return this.http.post<any>(`${this.apiUrl}/${invoiceId}/files`, formData);
+  }
+
   makePdfInvoice(customerInvoiceId: string) {
     const url = `${this.apiUrl}/pdf/${customerInvoiceId}`;
     return this.http.get(url, { responseType: 'blob' });

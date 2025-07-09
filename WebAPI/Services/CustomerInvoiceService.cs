@@ -20,7 +20,8 @@ namespace WebAPI.Services
         Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId);
         Task SendInvoiceEmailAsync(Guid invoiceId);
         Task AddFileToInvoiceAsync(Guid invoiceId, IFormFile file, string fileType);
-        Task UpdateInvoiceFileStatusAsync(Guid invoiceId, Guid fileId, string newStatus);
+        Task MarkInvoiceFileAsDeleteAsync(Guid invoiceId, Guid fileId);
+        Task<(byte[] FileBytes, string FileName)?> DownloadInvoiceFileAsync(Guid invoiceId, Guid invoiceFileId);
     }
 
     public class CustomerInvoiceService : ICustomerInvoiceService
@@ -128,13 +129,13 @@ namespace WebAPI.Services
             if (invoice == null)
                 throw new KeyNotFoundException("Invoice not found");
 
-            var category = Path.Combine("invoice", invoiceId.ToString());
+            var category = Path.Combine("invoices", invoiceId.ToString());
             var relativePath = await _fileService.SaveFileAsync(file, category);
 
             var invoiceFile = new CustomerInvoiceFile
             {
                 CustomerInvoiceFileId = Guid.NewGuid(),
-                Status = Common.Constants.GeneralStatuses.Active,
+                Status =GeneralStatuses.Active,
                 CustomerInvoiceId = invoiceId,
                 FileName = file.FileName,
                 FilePath = relativePath,
@@ -142,11 +143,11 @@ namespace WebAPI.Services
                 CreationDate = DateTime.UtcNow
             };
 
-            invoice.CustomerInvoiceFiles.Add(invoiceFile);
+            await _context.CustomerInvoiceFiles.AddAsync(invoiceFile);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateInvoiceFileStatusAsync(Guid invoiceId, Guid fileId, string newStatus)
+        public async Task MarkInvoiceFileAsDeleteAsync(Guid invoiceId, Guid fileId)
         {
             var invoice = await _context.CustomerInvoices
                 .Include(i => i.CustomerInvoiceFiles)
@@ -159,10 +160,30 @@ namespace WebAPI.Services
             if (file == null)
                 throw new KeyNotFoundException("Invoice file not found");
 
-            file.Status = newStatus;
+            file.Status = GeneralStatuses.Deleted;
             file.UpdateDate = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<(byte[] FileBytes, string FileName)?> DownloadInvoiceFileAsync(Guid invoiceId, Guid invoiceFileId)
+        {
+            var customerFile = await _context.CustomerInvoiceFiles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.CustomerInvoiceFileId == invoiceFileId);
+
+            if (customerFile == null)
+                return null;
+
+            if (customerFile.CustomerInvoiceId != invoiceId)
+                return null;
+
+            var relativePath = customerFile.FilePath.StartsWith("/uploads/")
+                ? customerFile.FilePath.Substring(9)
+                : customerFile.FilePath;
+
+            var fileBytes = await _fileService.GetFileAsync(relativePath);
+            return (fileBytes, customerFile.FileName);
         }
 
         public async Task SendInvoiceEmailAsync(Guid invoiceId)

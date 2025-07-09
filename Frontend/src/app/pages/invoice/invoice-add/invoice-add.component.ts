@@ -157,7 +157,7 @@ export class InvoiceAddComponent implements OnInit {
         invoiceDate: formValue.invoiceDate,
         vat_id: formValue.vatId,
         invoiceType: formValue.invoiceType,
-        status: formValue.status || 'Draft',
+        status: formValue.status || 'Created',
         subTotalAmount: parseFloat(formValue.subTotal),
         vatAmount: parseFloat(formValue.tax),
         totalAmount: parseFloat(formValue.total),
