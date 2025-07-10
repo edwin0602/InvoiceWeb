@@ -1,12 +1,13 @@
-<nz-layout *ngIf="authService.isAuthenticated()" class="app-layout">
-  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [nzCollapsedWidth]="0"
+<nz-layout class="app-layout" *ngIf="authService.isAuthenticated()">
+  <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" [nzCollapsedWidth]="0" nzBreakpoint="md"
     [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://codebangla.com" target="_blank">
-        <img src="assets/invoicika.svg" alt="logo" />
+      <a target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
         <h1>Invoicika</h1>
       </a>
     </div>
+
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <ng-container *ngFor="let item of menuItems">
         <li *ngIf="!item.children" nz-menu-item nzMatchRouter>
@@ -27,32 +28,34 @@
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header style="background: #fff; padding: 0;">
+    <nz-header>
       <div class="app-header">
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></nz-icon>
         </span>
-        <div class="user">
-          <!-- Dropdown Menu for User Actions -->
-          <a nz-dropdown [nzDropdownMenu]="menu" class="ant-dropdown-link">
-            {{ username }}
-            <span nz-icon nzType="down"></span>
-          </a>
+
+        <div class="header-right">
+          <div class="user" nz-dropdown [nzDropdownMenu]="menu">
+            <nz-avatar nzSize="small" nzText="{{userInitials}}" style="background-color: #7265e6;"></nz-avatar>
+            <span class="user-name">{{ username }}</span>
+            <nz-icon nzType="down"></nz-icon>
+          </div>
+
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li nz-menu-item *ngIf="userId" [routerLink]="['/users/edit', userId]">Perfil</li>
+              <li nz-menu-item [routerLink]="['/users/edit', userId]">Perfil</li>
               <li nz-menu-item (click)="authService.logout()">Cerrar sesión</li>
             </ul>
           </nz-dropdown-menu>
         </div>
       </div>
     </nz-header>
+
     <nz-content>
       <div class="inner-content">
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer style="text-align: center;">Invoicika ©2025</nz-footer>
   </nz-layout>
 </nz-layout>
 <router-outlet *ngIf="!authService.isAuthenticated()"></router-outlet>

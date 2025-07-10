@@ -13,6 +13,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
@@ -31,7 +33,9 @@ registerLocaleData(en);
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
-    NzDropDownModule
+    NzDropDownModule,
+    NzBadgeModule,
+    NzAvatarModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US, },
