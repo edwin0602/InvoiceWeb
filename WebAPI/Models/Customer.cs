@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebAPI.Common.Constants;
 
 namespace WebAPI.Models
 {
@@ -23,7 +24,7 @@ namespace WebAPI.Models
 
         [Required]
         [StringLength(50)]
-        public string Status { get; set; }
+        public string Status { get; set; } = GeneralStatuses.Active;
 
         [Required]
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;

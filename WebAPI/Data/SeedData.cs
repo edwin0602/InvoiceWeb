@@ -45,16 +45,12 @@ namespace WebAPI.Data
                             PasswordHash = HashPassword("admin1"),
                             PhotoUrl = "/uploads/admin1.png",
                             Role_id = adminRole.RoleId,
-                            CreationDate = DateTime.UtcNow
-                        },
-                        new User
-                        {
-                            Username = "admin2",
-                            EmailAddress = "admin2@example.com",
-                            PasswordHash = HashPassword("admin2"),
-                            PhotoUrl = "/uploads/admin2.png",
-                            Role_id = adminRole.RoleId,
-                            CreationDate = DateTime.UtcNow
+                            CreationDate = DateTime.UtcNow,
+                            DocumentNumber = "109821308",
+                            FirstName = "Camila",
+                            LastName = "Ramírez",
+                            PhoneNumber = "3001112233",
+                            Address = "Calle 10 #15-20, Bogotá"
                         },
                         new User
                         {
@@ -63,15 +59,26 @@ namespace WebAPI.Data
                             PasswordHash = HashPassword("employee1"),
                             PhotoUrl = "/uploads/employee1.jpg",
                             Role_id = employeeRole.RoleId,
-                            CreationDate = DateTime.UtcNow
+                            CreationDate = DateTime.UtcNow,
+                            DocumentNumber = "109821307",
+                            FirstName = "Luis",
+                            LastName = "Martínez",
+                            PhoneNumber = "3002223344",
+                            Address = "Carrera 45 #56-78, Medellín"
                         },
                         new User
                         {
                             Username = "employee2",
                             EmailAddress = "employee2@example.com",
                             PasswordHash = HashPassword("employee2"),
+                            PhotoUrl = "/uploads/employee2.jpg",
                             Role_id = employeeRole.RoleId,
-                            CreationDate = DateTime.UtcNow
+                            CreationDate = DateTime.UtcNow,
+                            DocumentNumber = "109821306",
+                            FirstName = "Valeria",
+                            LastName = "González",
+                            PhoneNumber = "3003334455",
+                            Address = "Avenida 9 #20-40, Cali"
                         }
                     };
 

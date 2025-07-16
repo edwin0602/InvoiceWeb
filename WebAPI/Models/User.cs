@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using WebAPI.Common.Constants;
 
 namespace WebAPI.Models
 {
@@ -27,7 +28,7 @@ namespace WebAPI.Models
 
         [Required]
         [StringLength(50)]
-        public string Status { get; set; }
+        public string Status { get; set; } = GeneralStatuses.Active;
 
         [StringLength(512)]
         public string? Address { get; set; }
