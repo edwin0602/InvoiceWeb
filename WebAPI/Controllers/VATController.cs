@@ -15,7 +15,6 @@ namespace WebAPI.Controllers
             _vatService = vatService;
         }
 
-        // GET: api/VAT
         [HttpGet]
         public async Task<IActionResult> GetVATs()
         {
@@ -23,7 +22,6 @@ namespace WebAPI.Controllers
             return Ok(vats);
         }
 
-        // GET: api/VAT/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVATById(Guid id)
         {
@@ -35,7 +33,6 @@ namespace WebAPI.Controllers
             return Ok(vat);
         }
 
-        // POST: api/VAT
         [HttpPost]
         public async Task<IActionResult> CreateVAT([FromBody] VAT vat)
         {
@@ -48,7 +45,6 @@ namespace WebAPI.Controllers
             return CreatedAtAction(nameof(GetVATById), new { id = vat.VatId }, vat);
         }
 
-        // PUT: api/VAT/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVAT(Guid id, [FromBody] VAT vat)
         {
@@ -69,7 +65,6 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/VAT/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVAT(Guid id)
         {

@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using WebAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using WebAPI.Models;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -240,6 +235,7 @@ namespace WebAPI.Data
 
                     context.Customers.AddRange(customers);
                     logger.LogInformation("Customers added to the database.");
+                    
                     var vats = new List<VAT>
                     {
                         new VAT
@@ -266,6 +262,12 @@ namespace WebAPI.Data
                     context.VATs.AddRange(vats);
                     logger.LogInformation("VAT entries added to the database.");
 
+                    // Add BankAccounts entries to the context
+                    context.BankAccounts.AddRange(new BankAccount { 
+                        BankName = "Bank of America",
+                        AccountNumber = "1234567890"
+                    });
+                    logger.LogInformation("BankAccounts entries added to the database.");
 
                     // Save changes
                     context.SaveChanges();

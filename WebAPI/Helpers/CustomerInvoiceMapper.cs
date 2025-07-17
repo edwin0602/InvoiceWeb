@@ -84,6 +84,35 @@ namespace WebAPI.Helpers
             };
         }
 
+        public static CustomerInvoicePayDto ToDto(CustomerInvoicePay pay)
+        {
+            return new CustomerInvoicePayDto
+            {
+                CustomerInvoicePayId = pay.CustomerInvoicePayId,
+                CustomerInvoiceId = pay.CustomerInvoiceId,
+                Description = pay.Description,
+                Amount = pay.Amount,
+                PaymentDate = pay.PaymentDate,
+                PaymentMethod = pay.PaymentMethod,
+                Status = pay.Status,
+                UserName = pay.User?.Username
+            };
+        }
+
+        public static CustomerInvoicePay ToModel(CustomerInvoicePayDto dto)
+        {
+            return new CustomerInvoicePay
+            {
+                CustomerInvoicePayId = dto.CustomerInvoicePayId != Guid.Empty ? dto.CustomerInvoicePayId : Guid.NewGuid(),
+                CustomerInvoiceId = dto.CustomerInvoiceId,
+                Amount = dto.Amount,
+                PaymentDate = dto.PaymentDate,
+                Description = dto.Description,
+                PaymentMethod = dto.PaymentMethod,
+                Status = dto.Status
+            };
+        }
+
         public static CustomerInvoiceDto ToDto(CustomerInvoice invoice)
         {
             return new CustomerInvoiceDto
@@ -103,7 +132,8 @@ namespace WebAPI.Helpers
                 Vat_id = invoice.Vat_id,
                 CustomerInvoiceLines = invoice.CustomerInvoiceLines?.Select(ToDto).ToList() ?? new List<CustomerInvoiceLineDto>(),
                 CustomerInvoiceFiles = invoice.CustomerInvoiceFiles?.Select(ToDto).ToList() ?? new List<CustomerInvoiceFileDto>(),
-                CustomerInvoiceNotes = invoice.CustomerInvoiceNotes?.Select(ToDto).ToList() ?? new List<CustomerInvoiceNoteDto>()
+                CustomerInvoiceNotes = invoice.CustomerInvoiceNotes?.Select(ToDto).ToList() ?? new List<CustomerInvoiceNoteDto>(),
+                CustomerInvoicePays = invoice.CustomerInvoicePays?.Select(ToDto).ToList() ?? new List<CustomerInvoicePayDto>()
             };
         }
 

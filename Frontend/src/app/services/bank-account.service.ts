@@ -1,13 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { catchError, of } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
+import { environment } from 'src/environments/environment';
 
-@Injectable({ providedIn: 'root' })
-export class VatService {
-  private apiUrl = environment.apiUrl + 'vat';
+@Injectable({
+  providedIn: 'root'
+})
+export class BankAccountService {
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = environment.apiUrl + 'bankaccount';
+  constructor(private http: HttpClient) { }
 
   getVats(
     pageNumber: number,

@@ -36,6 +36,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./pages/vat/vat.module').then((m) => m.VatModule),
   },
+   {
+    path: 'bank-accounts',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./pages/account/account.module').then((m) => m.AccountModule),
+  },
   {
     path: 'users',
     canActivate: [AuthGuard],

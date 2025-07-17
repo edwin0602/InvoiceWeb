@@ -17,6 +17,7 @@
         public ICollection<CustomerInvoiceLineDto> CustomerInvoiceLines { get; set; } = new List<CustomerInvoiceLineDto>();
         public ICollection<CustomerInvoiceFileDto> CustomerInvoiceFiles { get; set; } = new List<CustomerInvoiceFileDto>();
         public ICollection<CustomerInvoiceNoteDto> CustomerInvoiceNotes { get; set; } = new List<CustomerInvoiceNoteDto>();
+        public ICollection<CustomerInvoicePayDto> CustomerInvoicePays { get; set; } = new List<CustomerInvoicePayDto>();
         public Guid Vat_id { get; set; }
     }
 
