@@ -1,24 +1,28 @@
-<nz-page-header
-  class="site-page-header"
-  (nzBack)="onBack()"
-  nzBackIcon
-  nzTitle="Agregar IVA">
+<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Agregar Cuenta Bancaria">
 </nz-page-header>
 
-<form nz-form [formGroup]="addVatForm" (ngSubmit)="submitForm()">
+<form nz-form [formGroup]="addAccountForm" (ngSubmit)="submitForm()">
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Porcentaje de IVA (0-99)</nz-form-label>
-    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="percentageErrorTpl">
-      <input nz-input type="number" formControlName="percentage" placeholder="Ingrese el porcentaje de IVA" />
-      <ng-template #percentageErrorTpl let-control>
+    <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="accountNumber">Nombre del Cliente</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="nameErrorTpl">
+      <input nz-input formControlName="accountNumber" id="accountNumber" placeholder="Ingrese el nombre del cliente" />
+      <ng-template #nameErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          ¡Por favor ingrese el porcentaje de IVA!
+          ¡Por favor ingrese el nombre del cliente!
         </ng-container>
-        <ng-container *ngIf="control.errors?.['min']">
-          ¡El porcentaje de IVA no puede ser menor que 0!
-        </ng-container>
-        <ng-container *ngIf="control.errors?.['max']">
-          ¡El porcentaje de IVA no puede ser mayor que 100!
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired>Entidad Bancaria</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzHasFeedback [nzErrorTip]="bankNameErrorTpl">
+      <nz-select formControlName="bankName" nzPlaceHolder="Seleccione una entidad bancaria" nzShowSearch>
+        <nz-option *ngFor="let bank of listOfBanks" [nzLabel]="bank" [nzValue]="bank"></nz-option>
+      </nz-select>
+      <ng-template #bankNameErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['required']">
+          ¡Por favor seleccione una entidad bancaria!
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -26,7 +30,7 @@
 
   <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="12">
-      <button nz-button nzType="primary" [disabled]="!addVatForm.valid">
+      <button nz-button nzType="primary" [disabled]="!addAccountForm.valid">
         <span nz-icon nzType="plus"></span>Crear
       </button>
       <button nz-button (click)="resetForm($event)">Restablecer</button>

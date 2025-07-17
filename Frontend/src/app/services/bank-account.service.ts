@@ -12,7 +12,7 @@ export class BankAccountService {
   private apiUrl = environment.apiUrl + 'bankaccount';
   constructor(private http: HttpClient) { }
 
-  getVats(
+  getAccounts(
     pageNumber: number,
     pageSize: number,
     sortField: string | null,
@@ -36,19 +36,38 @@ export class BankAccountService {
       .pipe(catchError(() => of([])));
   }
 
-  addVat(vat: any): Observable<void> {
+  addAccount(vat: any): Observable<void> {
     return this.http.post<void>(this.apiUrl, vat);
   }
 
-  updateVat(vatId: string, vat: any): Observable<void> {
+  updateAccount(vatId: string, vat: any): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${vatId}`, vat);
   }
 
-  getVatById(vatId: string): Observable<any> {
+  getAccountById(vatId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${vatId}`);
   }
 
-  deleteVat(vatId: string): Observable<void> {
+  deleteAccount(vatId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${vatId}`);
+  }
+
+  getBanks(): Observable<string[]> {
+    const banks = [
+      'Bancolombia',
+      'Davivienda',
+      'Banco de Bogotá',
+      'AV Villas',
+      'Banco Popular',
+      'BBVA Colombia',
+      'Itaú',
+      'Bancoomeva',
+      'Colpatria',
+      'Falabella',
+      'Pichincha',
+      'Occidente',
+      'Agrario',
+    ];
+    return of(banks);
   }
 }

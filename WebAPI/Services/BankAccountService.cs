@@ -30,7 +30,8 @@ namespace WebAPI.Services
 
         public async Task<BankAccount> GetBankAccountByIdAsync(Guid id)
         {
-            return await _context.BankAccounts.FirstOrDefaultAsync(b => b.BankAccountId == id);
+            return await _context.BankAccounts.FirstOrDefaultAsync(b => b.BankAccountId == id)
+                ?? throw new KeyNotFoundException("BankAccount not found");
         }
 
         public async Task AddBankAccountAsync(BankAccount bankAccount)
@@ -43,21 +44,20 @@ namespace WebAPI.Services
 
         public async Task UpdateBankAccountAsync(BankAccount bankAccount)
         {
-            _ = await GetBankAccountByIdAsync(bankAccount.BankAccountId)
+            var existing = await GetBankAccountByIdAsync(bankAccount.BankAccountId)
                 ?? throw new KeyNotFoundException("BankAccount not found");
 
-            _context.BankAccounts.Update(bankAccount);
+            existing.BankName = bankAccount.BankName;
+            existing.AccountNumber = bankAccount.AccountNumber;
+
             await _context.SaveChangesAsync();
         }
 
         public async Task MarkAsDeleteBankAccountAsync(Guid id)
         {
-            var bankAccount = await GetBankAccountByIdAsync(id)
-                ?? throw new KeyNotFoundException("BankAccount not found");
+            var bankAccount = await GetBankAccountByIdAsync(id);
 
-            bankAccount.Status = GeneralStatuses.Deleted;
-            _context.BankAccounts.Update(bankAccount);
-
+            _context.BankAccounts.Remove(bankAccount);
             await _context.SaveChangesAsync();
         }
     }

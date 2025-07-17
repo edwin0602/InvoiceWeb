@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { VatService } from 'src/app/services/vat.service';
+import { BankAccountService } from 'src/app/services/bank-account.service';
 
 @Component({
   selector: 'app-account-add',
@@ -10,34 +10,42 @@ import { VatService } from 'src/app/services/vat.service';
   styleUrls: ['./account-add.component.css'],
   standalone: false
 })
-export class AccountAddComponent {
-  addVatForm: FormGroup;
+export class AccountAddComponent implements OnInit {
+  addAccountForm: FormGroup;
+  listOfBanks: string[] = [];
 
   constructor(
     private fb: NonNullableFormBuilder,
-    private vatService: VatService,
+    private accountService: BankAccountService,
     private router: Router,
     private message: NzMessageService
   ) {
-    this.addVatForm = this.fb.group({
-      percentage: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]), // Percentage field
+    this.addAccountForm = this.fb.group({
+      bankName: new FormControl<string | null>(null, [Validators.required]),
+      accountNumber: new FormControl<string | null>(null, [Validators.required])
+    });
+  }
+  
+  ngOnInit(): void {
+    this.accountService.getBanks().subscribe((banks) => {
+      this.listOfBanks = banks;
     });
   }
 
   submitForm(): void {
-    if (this.addVatForm.valid) {
-      const newVat = {
-        ...this.addVatForm.value,
+    if (this.addAccountForm.valid) {
+      const newAccount = {
+        ...this.addAccountForm.value,
       };
 
-      this.vatService.addVat(newVat).subscribe({
+      this.accountService.addAccount(newAccount).subscribe({
         next: () => {
-          this.message.success('VAT added successfully');
-          this.router.navigate(['/vat/all']); // Navigate back to VAT list
+          this.message.success('Account added successfully');
+          this.router.navigate(['/bank-accounts/all']);
         },
         error: (err) => {
-          this.message.error('Error adding VAT');
-          console.error('Error adding VAT:', err);
+          this.message.error('Error adding Account');
+          console.error('Error adding Account:', err);
         },
       });
     }
@@ -45,10 +53,10 @@ export class AccountAddComponent {
 
   resetForm(e: MouseEvent): void {
     e.preventDefault();
-    this.addVatForm.reset();
+    this.addAccountForm.reset();
   }
 
   onBack(): void {
-    this.router.navigate(['/vat/all']); // Navigate back to VAT list
+    this.router.navigate(['/bank-accounts/all']);
   }
 }

@@ -9,6 +9,7 @@ namespace WebAPI.Controllers
     public class BankAccountController : ControllerBase
     {
         private readonly IBankAccountService _bankAccountService;
+        
         public BankAccountController(IBankAccountService bankAccountService)
         {
             _bankAccountService = bankAccountService;

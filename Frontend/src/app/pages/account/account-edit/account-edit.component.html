@@ -1,32 +1,38 @@
-<nz-page-header
-  class="site-page-header"
-  (nzBack)="onBack()"
-  nzBackIcon
-  nzTitle="Editar IVA">
+<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Editar Cuenta Bancaria">
 </nz-page-header>
 
-<form nz-form [formGroup]="editVatForm" (ngSubmit)="submitForm()">
+<form nz-form [formGroup]="editAccountForm" (ngSubmit)="submitForm()">
   <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired>Porcentaje de IVA</nz-form-label>
+    <nz-form-label [nzSpan]="7" nzRequired>Numero de cuenta</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="percentageErrorTpl">
-      <input nz-input type="number" formControlName="percentage" placeholder="Ingrese el porcentaje de IVA" />
+      <input nz-input formControlName="accountNumber" placeholder="Ingrese el porcentaje de IVA" />
       <ng-template #percentageErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
           ¡Por favor ingrese el porcentaje de IVA!
-        </ng-container>
-        <ng-container *ngIf="control.errors?.['min']">
-          ¡El porcentaje de IVA no puede ser menor que 0!
-        </ng-container>
-        <ng-container *ngIf="control.errors?.['max']">
-          ¡El porcentaje de IVA no puede ser mayor que 100!
         </ng-container>
       </ng-template>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
+    <nz-form-label [nzSpan]="7" nzRequired>Entidad Bancaria</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="bankNameErrorTpl">
+      <nz-select formControlName="bankName" nzPlaceHolder="Seleccione una entidad bancaria" nzShowSearch>
+        <nz-option *ngFor="let bank of listOfBanks" [nzLabel]="bank" [nzValue]="bank"></nz-option>
+      </nz-select>
+      <ng-template #bankNameErrorTpl let-control>
+        <ng-container *ngIf="control.errors?.['required']">
+          ¡Por favor seleccione una entidad bancaria!
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+
+  <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="12">
-      <button nz-button nzType="primary" [disabled]="!editVatForm.valid"><span nz-icon nzType="edit"></span>Editar</button>
+      <button nz-button nzType="primary" [disabled]="!editAccountForm.valid"><span nz-icon
+          nzType="edit"></span>Editar</button>
       <button nz-button (click)="resetForm($event)">Restablecer</button>
     </nz-form-control>
   </nz-form-item>

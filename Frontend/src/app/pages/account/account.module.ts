@@ -17,6 +17,7 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountAddComponent } from './account-add/account-add.component';
 import { AccountEditComponent } from './account-edit/account-edit.component';
 import { AccountListComponent } from './account-list/account-list.component';
+import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 
 
 @NgModule({
@@ -39,7 +40,9 @@ import { AccountListComponent } from './account-list/account-list.component';
     NzFormModule,
     NzNotificationModule,
     NzMessageModule,
-    NzModalModule
+    NzModalModule,
+    NzOptionComponent,
+    NzSelectComponent
 
   ]
 })

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { VatService } from 'src/app/services/vat.service';
+import { BankAccountService } from 'src/app/services/bank-account.service';
 
 @Component({
   selector: 'app-account-edit',
@@ -11,48 +11,53 @@ import { VatService } from 'src/app/services/vat.service';
   standalone: false
 })
 export class AccountEditComponent implements OnInit {
-
-  editVatForm: FormGroup;
-  vatId!: string;
+  editAccountForm: FormGroup;
+  accountId!: string;
+  listOfBanks: string[] = [];
 
   constructor(
     private fb: NonNullableFormBuilder,
-    private vatService: VatService,
+    private accountService: BankAccountService,
     private router: Router,
     private route: ActivatedRoute,
     private message: NzMessageService
   ) {
-    this.editVatForm = this.fb.group({
-      percentage: new FormControl<number | null>(null, [Validators.required, Validators.min(0), Validators.max(100)]), // Percentage field
+    this.editAccountForm = this.fb.group({
+      bankName: new FormControl<string | null>(null, [Validators.required]),
+      accountNumber: new FormControl<string | null>(null, [Validators.required])
     });
   }
 
   ngOnInit(): void {
-    this.vatId = this.route.snapshot.paramMap.get('vatId')!; // Fetch VAT ID from route
-    this.vatService.getVatById(this.vatId).subscribe((vat) => {
-      this.editVatForm.patchValue({
-        percentage: vat.percentage, // Set the percentage value in the form
+    this.accountId = this.route.snapshot.paramMap.get('accountId')!;
+    this.accountService.getBanks().subscribe((banks) => {
+      this.listOfBanks = banks;
+    });
+    this.accountService.getAccountById(this.accountId).subscribe((account) => {
+      this.editAccountForm.patchValue({
+        bankName: account.bankName,
+        accountNumber: account.accountNumber
       });
     }, error => {
-      this.message.error('Error loading VAT details');
+      this.message.error('Error loading Account details');
     });
   }
 
   submitForm(): void {
-    if (this.editVatForm.valid) {
-      const updatedVat = {
-        vatId: this.vatId,
-        ...this.editVatForm.value
+    if (this.editAccountForm.valid) {
+      const updatedAccount = {
+        bankAccountId: this.accountId,
+        ...this.editAccountForm.value
       };
 
-      this.vatService.updateVat(this.vatId, updatedVat).subscribe({
+      this.accountService.updateAccount(this.accountId, updatedAccount).subscribe({
         next: () => {
-          this.message.success('VAT updated successfully');
-          this.router.navigate(['/vat/all']); // Navigate back to VAT list
+          this.message.success('Account updated successfully');
+          this.router.navigate(['/bank-accounts/all']);
         },
         error: (err) => {
-          this.message.error('Error updating VAT');
-          console.error('Error updating VAT:', err);
+          this.message.error('Error updating Account');
+          console.error('Error updating Account:', err);
         }
       });
     }
@@ -60,11 +65,11 @@ export class AccountEditComponent implements OnInit {
 
   resetForm(e: MouseEvent): void {
     e.preventDefault();
-    this.editVatForm.reset();
+    this.editAccountForm.reset();
   }
 
   onBack(): void {
-    this.router.navigate(['/vat/all']); // Navigate back to VAT list
+    this.router.navigate(['/bank-accounts/all']);
   }
 
 }

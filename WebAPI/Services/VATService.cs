@@ -29,7 +29,8 @@ namespace WebAPI.Services
 
         public async Task<VAT> GetVATByIdAsync(Guid id)
         {
-            return await _context.VATs.FirstOrDefaultAsync(v => v.VatId == id);
+            return await _context.VATs.FirstOrDefaultAsync(v => v.VatId == id)
+                ?? throw new KeyNotFoundException("VAT not found");
         }
 
         public async Task AddVATAsync(VAT vat)
@@ -47,11 +48,9 @@ namespace WebAPI.Services
         public async Task DeleteVATAsync(Guid id)
         {
             var vat = await GetVATByIdAsync(id);
-            if (vat != null)
-            {
-                _context.VATs.Remove(vat);
-                await _context.SaveChangesAsync();
-            }
+
+            _context.VATs.Remove(vat);
+            await _context.SaveChangesAsync();
         }
     }
 }

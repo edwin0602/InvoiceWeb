@@ -7,7 +7,7 @@ import { AccountListComponent } from './account-list/account-list.component';
 const routes: Routes = [
   { path: 'all', component: AccountListComponent },
   { path: 'add', component: AccountAddComponent },
-  { path: 'edit/:vatId', component: AccountEditComponent },
+  { path: 'edit/:accountId', component: AccountEditComponent },
 ];
 
 @NgModule({

@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
       icon: 'setting',
       children: [
         { label: 'IVA', route: '/vat/all' },
+        { label: 'Cuentas', route: '/bank-accounts/all', adminOnly: true },
         { label: 'Usuarios', route: '/users/all', adminOnly: true },
         { label: 'Roles', route: '/roles/all', adminOnly: true }
       ]
