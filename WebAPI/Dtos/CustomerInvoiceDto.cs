@@ -5,6 +5,7 @@
         public Guid CustomerInvoiceId { get; set; }
         public string? Status { get; set; }
         public string InvoiceType { get; set; }
+        public string Consecutive { get; set; }
         public Guid Customer_id { get; set; }
         public Guid User_id { get; set; }
         public DateTime InvoiceDate { get; set; }

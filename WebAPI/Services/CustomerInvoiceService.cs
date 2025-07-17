@@ -74,6 +74,8 @@ namespace WebAPI.Services
         public async Task CreateCustomerInvoiceAsync(CustomerInvoiceDto dto)
         {
             var invoice = CustomerInvoiceMapper.ToModel(dto);
+
+            invoice.Consecutive = DataHelper.GenerateConsecutive();
             invoice.Status = InvoiceStatuses.Created;
 
             _context.CustomerInvoices.Add(invoice);

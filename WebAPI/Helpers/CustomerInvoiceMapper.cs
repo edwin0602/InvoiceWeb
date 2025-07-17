@@ -120,6 +120,7 @@ namespace WebAPI.Helpers
                 CustomerInvoiceId = invoice.CustomerInvoiceId,
                 Status = invoice.Status,
                 InvoiceType = invoice.InvoiceType,
+                Consecutive = invoice.Consecutive,
                 Customer_id = invoice.Customer_id,
                 User_id = invoice.User_id,
                 InvoiceDate = invoice.InvoiceDate,

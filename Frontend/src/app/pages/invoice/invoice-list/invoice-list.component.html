@@ -34,7 +34,7 @@
     nzBordered>
     <thead>
       <tr>
-        <th nzColumnKey="customerInvoiceId" nzShowSort>Factura</th>
+        <th nzColumnKey="consecutive" nzShowSort>Factura</th>
         <th nzColumnKey="customer_id" nzShowSort>Cliente</th>
         <th nzColumnKey="invoiceType" nzShowSort>Tipo</th>
         <th nzColumnKey="invoiceDate" nzShowSort>Fecha</th>
@@ -46,7 +46,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let invoice of listOfInvoices">
-        <td>{{ invoice.customerInvoiceId }}</td>
+        <td>{{ invoice.consecutive }}</td>
         <td>{{ getCustomerName(invoice.customer_id) }}</td>
         <td>{{ invoice.invoiceType | translate }}</td>
         <td>{{ invoice.invoiceDate | date }}</td>

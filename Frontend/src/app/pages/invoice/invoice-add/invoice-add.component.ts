@@ -51,6 +51,7 @@ export class InvoiceAddComponent implements OnInit {
     this.loadItems();
     this.loadInvoiceTypes();
     this.addLineItem();
+    console.log('User Info:', this.auth.getUserInfo());
     this.userId = this.auth.getUserInfo().userId;
   }
 

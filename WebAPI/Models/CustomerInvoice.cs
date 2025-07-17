@@ -13,6 +13,9 @@ public class CustomerInvoice
     public string Status { get; set; } = InvoiceStatuses.Created;
 
     [Required]
+    public string Consecutive { get; set; }
+
+    [Required]
     [StringLength(50)]
     public string InvoiceType { get; set; } = InvoiceTypes.Draft;
 

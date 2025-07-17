@@ -13,7 +13,7 @@ export class AuthService {
   private apiUrl = environment.apiUrl + 'auth';
   userInfoUpdated = new EventEmitter<void>();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string): Observable<any> {
     return this.http
