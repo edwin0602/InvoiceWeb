@@ -1,13 +1,14 @@
 import { AuthService } from './../../../services/auth.service';
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as saveAs from 'file-saver';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { Observable, of } from 'rxjs';
 import { CustomerInvoiceService } from 'src/app/services/customerinvoice.service';
+import { InvoicePaymentModalComponent } from '../invoice-payment-modal/invoice-payment-modal.component';
 
 @Component({
   selector: 'app-invoice-edit',
@@ -23,12 +24,17 @@ export class InvoiceEditComponent implements OnInit {
   invoiceTypeList: any[] = [];
   itemsList: any[] = [];
   invoiceFiles: any[] = [];
+  invoiceItems: any[] = [];
+  invoicePayments: any[] = [];
+  invoiceNotes: any[] = [];
   subTotalAmount = 0;
   vatAmount = 0;
   totalAmount = 0;
   invoiceId: string = '';
+  currentInvoice: any = null;
   currentUser: any;
   loading = true;
+  isUploading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +42,7 @@ export class InvoiceEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private message: NzMessageService,
+    private modal: NzModalService,
     private authservice: AuthService
   ) { }
 
@@ -53,6 +60,7 @@ export class InvoiceEditComponent implements OnInit {
       subTotal: [0],
       tax: [0],
       total: [0],
+      paid: [0],
       lineItems: this.fb.array([]),
     });
 
@@ -114,11 +122,21 @@ export class InvoiceEditComponent implements OnInit {
             subTotal: invoice.subTotalAmount,
             tax: invoice.vatAmount,
             total: invoice.totalAmount,
+            paid: invoice.paidAmount
           });
 
           invoice.customerInvoiceLines.forEach((line: any) => {
             this.addLineItemWithData(line);
           });
+
+          this.invoiceItems = (invoice.customerInvoiceLines || []).map((line: any) => ({
+            invoiceLineId: line.customerInvoiceFileId,
+            name: line.itemName,
+            description: line.itemDescription,
+            quantity: line.quantity,
+            price: line.price,
+            total: line.quantity * line.price
+          }));
 
           this.invoiceFiles = (invoice.customerInvoiceFiles || []).map((file: any) => ({
             uid: file.customerInvoiceFileId,
@@ -131,6 +149,24 @@ export class InvoiceEditComponent implements OnInit {
             updateDate: file.updateDate
           }));
 
+          this.invoicePayments = (invoice.customerInvoicePayments || []).map((payment: any) => ({
+            paymentId: payment.customerInvoicePayId,
+            paymentDate: payment.paymentDate,
+            status: payment.status,
+            paymentMethod: payment.paymentMethod,
+            description: payment.description,
+            amount: payment.amount,
+            userName: payment.userName
+          }));
+
+          this.invoiceNotes = (invoice.customerInvoiceNotes || []).map((note: any) => ({
+            text: note.text,
+            date: note.date,
+            status: note.status
+          }));
+
+          this.currentInvoice = invoice;
+
           this.calculateTotals();
           this.loading = false;
         });
@@ -140,7 +176,21 @@ export class InvoiceEditComponent implements OnInit {
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
-    this.invoiceFiles = [...this.invoiceFiles, file];
+    this.isUploading = true;
+    const fileObj = file.originFileObj || file;
+    this.invoiceService.uploadInvoiceFile(this.invoiceId, fileObj).subscribe({
+      next: () => {
+        this.invoiceFiles = [...this.invoiceFiles, file];
+        this.message.success('Soporte cargado con exito');
+        this.isUploading = false;
+      },
+      error: (err) => {
+        console.error('Error uploading file:', err);
+        this.message.error('Error subiendo archivos');
+        this.isUploading = false;
+      }
+    });
+
     return false;
   };
 
@@ -248,6 +298,11 @@ export class InvoiceEditComponent implements OnInit {
     });
   }
 
+  get canApplyPayments(): boolean {
+    if (this.currentInvoice.invoiceType != "Final") return false;
+    return (this.totalAmount - (this.validateForm.get('paidAmount')?.value || 0)) > 0;
+  }
+
   onItemChange(index: number, itemId: string) {
     const selectedItem = this.itemsList.find((item) => item.itemId === itemId);
     if (selectedItem) {
@@ -327,8 +382,21 @@ export class InvoiceEditComponent implements OnInit {
     this.router.navigate(['/invoices/all']);
   }
 
-  printInvoice(invoiceId: string): void {
-    this.invoiceService.makePdfInvoice(invoiceId).subscribe(
+  openPaymentModal(): void {
+    this.modal.create({
+      nzTitle: 'Registrar nuevo pago',
+      nzContent: InvoicePaymentModalComponent,
+      nzData: {
+        invoiceId: this.invoiceId,
+        totalAmount: this.totalAmount,
+        paidAmount: this.validateForm.get('paid')?.value || 0
+      },
+      nzFooter: null
+    });
+  }
+
+  printInvoice(): void {
+    this.invoiceService.makePdfInvoice(this.invoiceId).subscribe(
       (response: Blob) => {
         const blob = new Blob([response], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -346,10 +414,10 @@ export class InvoiceEditComponent implements OnInit {
     );
   }
 
-  printInvoicePdf(invoiceId: string): void {
-    this.invoiceService.makePdfInvoice(invoiceId).subscribe(
+  printInvoicePdf(): void {
+    this.invoiceService.makePdfInvoice(this.invoiceId).subscribe(
       (response: Blob) => {
-        saveAs(response, `Invoice_${invoiceId}.pdf`);
+        saveAs(response, `Invoice_${this.invoiceId}.pdf`);
       },
       (error) => {
         this.message.error('Error downloading the PDF');
@@ -357,8 +425,8 @@ export class InvoiceEditComponent implements OnInit {
     );
   }
 
-  emailInvoicePdf(customerInvoiceId: string): void {
-    this.invoiceService.emailInvoice(customerInvoiceId).subscribe({
+  emailInvoicePdf(): void {
+    this.invoiceService.emailInvoice(this.invoiceId).subscribe({
       next: (response) => {
         this.message.success(
           response.message || 'Invoice emailed successfully'

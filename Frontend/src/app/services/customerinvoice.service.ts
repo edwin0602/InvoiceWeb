@@ -5,11 +5,12 @@ import { environment } from 'src/environments/environment'; // Import the enviro
 
 @Injectable({ providedIn: 'root' })
 export class CustomerInvoiceService {
-  private apiUrl = environment.apiUrl + 'customerinvoices'; // Use the environment variable
-  private vatUrl = environment.apiUrl + 'vat'; // VAT API URL
-  private customersUrl = environment.apiUrl + 'customers'; // Customers API URL
-  private usersUrl = environment.apiUrl + 'users'; // Users API URL
-  private itemsUrl = environment.apiUrl + 'items'; // Users API URL
+  private apiUrl = environment.apiUrl + 'customerinvoices';
+  private vatUrl = environment.apiUrl + 'vat';
+  private customersUrl = environment.apiUrl + 'customers';
+  private usersUrl = environment.apiUrl + 'users';
+  private itemsUrl = environment.apiUrl + 'items';
+  private paymentsUrl = environment.apiUrl + 'payments';
   constructor(private http: HttpClient) { }
 
   getCustomerInvoices(
@@ -95,6 +96,10 @@ export class CustomerInvoiceService {
     return this.http.get<any[]>(this.itemsUrl).pipe(catchError(() => of([])));
   }
 
+  createPayment(payload: any): Observable<any> {
+    return this.http.post(this.paymentsUrl, payload);
+  }
+
   deleteInvoiceFile(invoiceId: string, fileId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${invoiceId}/files/${fileId}`);
   }
@@ -106,7 +111,7 @@ export class CustomerInvoiceService {
     });
   }
 
-  uploadInvoiceFile(invoiceId: string, file: File): Observable<any> {
+  uploadInvoiceFile(invoiceId: string, file: any): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileType', 'support');

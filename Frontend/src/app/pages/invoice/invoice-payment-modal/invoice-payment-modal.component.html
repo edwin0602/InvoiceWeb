@@ -1,0 +1,50 @@
+<form nz-form [formGroup]="paymentForm" (ngSubmit)="submit()">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Monto</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="amountErrorTpl">
+            <input nz-input type="number" formControlName="amount" min="0.01" [max]="totalAmount - paidAmount"
+                [placeholder]="'Ingrese el monto (máx: ' + (totalAmount - paidAmount) + ')'" />
+            <ng-template #amountErrorTpl let-control>
+                <ng-container *ngIf="control.errors?.['min']">
+                    El monto debe ser mayor a 0.
+                </ng-container>
+                <ng-container *ngIf="control.errors?.['max']">
+                    Monto mayor al total adeudado.
+                </ng-container>
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Método de Pago</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+            <nz-select formControlName="paymentMethod" nzPlaceHolder="Seleccione método">
+                <nz-option nzValue="Efectivo" nzLabel="Efectivo"></nz-option>
+                <nz-option *ngFor="let method of paymentMethods" [nzValue]="method.value"
+                    [nzLabel]="method.label"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Fecha de Pago</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+            <nz-date-picker style="width: 100%;" formControlName="paymentDate" nzFormat="yyyy-MM-dd"></nz-date-picker>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label [nzSpan]="7">Descripción</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+            <textarea nz-input formControlName="description" rows="3" placeholder="Ingrese una descripción"></textarea>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control [nzOffset]="7" [nzSpan]="12">
+            <button nz-button nzType="primary" [disabled]="paymentForm.invalid">
+                <span nz-icon nzType="credit-card"></span>Registrar Pago
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+</form>
