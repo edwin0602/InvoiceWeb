@@ -5,7 +5,7 @@
         public Guid CustomerInvoiceId { get; set; }
         public string? Status { get; set; }
         public string InvoiceType { get; set; }
-        public string Consecutive { get; set; }
+        public string? Consecutive { get; set; }
         public Guid Customer_id { get; set; }
         public Guid User_id { get; set; }
         public DateTime InvoiceDate { get; set; }
@@ -15,10 +15,11 @@
         public decimal SubTotalAmount { get; set; }
         public decimal VatAmount { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal PaidAmount { get; set; } = 0;
         public ICollection<CustomerInvoiceLineDto> CustomerInvoiceLines { get; set; } = new List<CustomerInvoiceLineDto>();
         public ICollection<CustomerInvoiceFileDto> CustomerInvoiceFiles { get; set; } = new List<CustomerInvoiceFileDto>();
         public ICollection<CustomerInvoiceNoteDto> CustomerInvoiceNotes { get; set; } = new List<CustomerInvoiceNoteDto>();
-        public ICollection<CustomerInvoicePayDto> CustomerInvoicePays { get; set; } = new List<CustomerInvoicePayDto>();
+        public ICollection<InvoicePaymentDto> CustomerInvoicePayments { get; set; } = new List<InvoicePaymentDto>();
         public Guid Vat_id { get; set; }
     }
 

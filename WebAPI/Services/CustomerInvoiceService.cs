@@ -49,11 +49,11 @@ namespace WebAPI.Services
                 .Include(c => c.CustomerInvoiceLines).ThenInclude(l => l.Item)
                 .Include(c => c.CustomerInvoiceFiles)
                 .Include(c => c.CustomerInvoiceNotes)
-                .Include(c => c.CustomerInvoicePays)
+                .Include(c => c.CustomerInvoicePayments)
                 .FirstOrDefaultAsync(c => c.CustomerInvoiceId == id);
 
             if (invoice == null)
-                throw new KeyNotFoundException("Customer Invoice Pay not found");
+                throw new KeyNotFoundException("Customer Invoice Payment not found");
 
             return CustomerInvoiceMapper.ToDto(invoice);
         }
