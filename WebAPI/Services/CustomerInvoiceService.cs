@@ -14,8 +14,8 @@ namespace WebAPI.Services
     {
         Task<CustomerInvoiceDto> GetCustomerInvoiceByIdAsync(Guid id);
         Task<IEnumerable<CustomerInvoiceDto>> GetAllCustomerInvoicesAsync();
-        Task CreateCustomerInvoiceAsync(CustomerInvoiceDto dto);
-        Task<bool> UpdateCustomerInvoiceAsync(Guid id, CustomerInvoiceDto dto);
+        Task CreateCustomerInvoiceAsync(CreateOrUpdateCustomerInvoiceDto dto);
+        Task<bool> UpdateCustomerInvoiceAsync(Guid id, CreateOrUpdateCustomerInvoiceDto dto);
         Task DeleteCustomerInvoiceAsync(Guid id);
         Task<byte[]> GenerateInvoicePdfAsync(Guid invoiceId);
         Task SendInvoiceEmailAsync(Guid invoiceId);
@@ -71,7 +71,7 @@ namespace WebAPI.Services
             return invoices.Select(CustomerInvoiceMapper.ToDto);
         }
 
-        public async Task CreateCustomerInvoiceAsync(CustomerInvoiceDto dto)
+        public async Task CreateCustomerInvoiceAsync(CreateOrUpdateCustomerInvoiceDto dto)
         {
             var invoice = CustomerInvoiceMapper.ToModel(dto);
 
@@ -82,7 +82,7 @@ namespace WebAPI.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateCustomerInvoiceAsync(Guid id, CustomerInvoiceDto updatedInvoice)
+        public async Task<bool> UpdateCustomerInvoiceAsync(Guid id, CreateOrUpdateCustomerInvoiceDto updatedInvoice)
         {
             var existingInvoice = await _context.CustomerInvoices
                 .Include(i => i.CustomerInvoiceLines)

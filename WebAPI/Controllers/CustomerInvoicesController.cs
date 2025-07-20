@@ -46,14 +46,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateCustomerInvoice([FromBody] CustomerInvoiceDto dto)
+        public async Task<ActionResult> CreateCustomerInvoice([FromBody] CreateOrUpdateCustomerInvoiceDto dto)
         {
             await _service.CreateCustomerInvoiceAsync(dto);
             return CreatedAtAction(nameof(GetCustomerInvoice), new { id = dto.CustomerInvoiceId }, dto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateInvoice(Guid id, [FromBody] CustomerInvoiceDto updatedInvoice)
+        public async Task<IActionResult> UpdateInvoice(Guid id, [FromBody] CreateOrUpdateCustomerInvoiceDto updatedInvoice)
         {
             var updated = await _service.UpdateCustomerInvoiceAsync(id, updatedInvoice);
             if (!updated)

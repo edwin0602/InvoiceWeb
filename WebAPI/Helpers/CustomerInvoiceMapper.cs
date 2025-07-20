@@ -134,6 +134,14 @@ namespace WebAPI.Helpers
                 TotalAmount = invoice.TotalAmount,
                 PaidAmount = invoice.PaidAmount,
                 Vat_id = invoice.Vat_id,
+                Customer = invoice.Customer != null ? new CustomerDto
+                {
+                    CustomerId = invoice.Customer.CustomerId,
+                    Name = invoice.Customer.Name,
+                    Email = invoice.Customer.Email,
+                    PhoneNumber = invoice.Customer.PhoneNumber,
+                    Address = invoice.Customer.Address,
+                } : new CustomerDto(),
                 CustomerInvoiceLines = invoice.CustomerInvoiceLines?.Select(ToDto).ToList() ?? new List<CustomerInvoiceLineDto>(),
                 CustomerInvoiceFiles = invoice.CustomerInvoiceFiles?.Select(ToDto).ToList() ?? new List<CustomerInvoiceFileDto>(),
                 CustomerInvoiceNotes = invoice.CustomerInvoiceNotes?.Select(ToDto).ToList() ?? new List<CustomerInvoiceNoteDto>(),
@@ -142,6 +150,28 @@ namespace WebAPI.Helpers
         }
 
         public static CustomerInvoice ToModel(CustomerInvoiceDto dto)
+        {
+            return new CustomerInvoice
+            {
+                CustomerInvoiceId = dto.CustomerInvoiceId,
+                Status = dto.Status,
+                InvoiceType = dto.InvoiceType,
+                Customer_id = dto.Customer_id,
+                User_id = dto.User_id,
+                InvoiceDate = dto.InvoiceDate,
+                ExpirationDate = dto.ExpirationDate,
+                CreationDate = dto.CreationDate,
+                UpdateDate = dto.UpdateDate,
+                SubTotalAmount = dto.SubTotalAmount,
+                VatAmount = dto.VatAmount,
+                TotalAmount = dto.TotalAmount,
+                PaidAmount = dto.PaidAmount,
+                Vat_id = dto.Vat_id,
+                CustomerInvoiceLines = dto.CustomerInvoiceLines?.Select(ToModel).ToList() ?? new List<CustomerInvoiceLine>()
+            };
+        }
+
+        public static CustomerInvoice ToModel(CreateOrUpdateCustomerInvoiceDto dto)
         {
             return new CustomerInvoice
             {
