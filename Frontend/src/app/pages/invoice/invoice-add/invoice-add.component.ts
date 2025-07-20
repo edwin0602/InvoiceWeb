@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -51,7 +50,6 @@ export class InvoiceAddComponent implements OnInit {
     this.loadItems();
     this.loadInvoiceTypes();
     this.addLineItem();
-    console.log('User Info:', this.auth.getUserInfo());
     this.userId = this.auth.getUserInfo().userId;
   }
 
