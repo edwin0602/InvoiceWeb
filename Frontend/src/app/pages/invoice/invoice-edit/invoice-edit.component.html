@@ -6,12 +6,15 @@
   <nz-page-header nzTitle="Detalles de {{ currentInvoice.consecutive }}" nzSubtitle="" nzBackIcon [nzGhost]="false">
     <nz-page-header-extra>
       <button nz-button nzType="primary" (click)="printInvoice()">
+        <i nz-icon nzType="printer" class="mr-2"></i>
         Imprimir
       </button>
       <button *ngIf="canApplyPayments" nz-button nzType="default" (click)="openPaymentModal()" style="margin-left: 8px">
+        <i nz-icon nzType="dollar-circle" class="mr-2"></i>
         Aplicar Pago
       </button>
       <button nz-button nzType="default" (click)="emailInvoicePdf()" style="margin-left: 8px">
+        <i nz-icon nzType="mail" class="mr-2"></i>
         Enviar por correo
       </button>
     </nz-page-header-extra>
@@ -23,7 +26,6 @@
         class="no-horizontal-padding">
         <nz-row [nzGutter]="16" style="margin-bottom: 24px;">
           <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="8">
-            <h4>Informacion del cliente</h4>
             <div>{{currentInvoice.customer.name}}</div>
             <div>{{currentInvoice.customer.address}}</div>
             <div>{{currentInvoice.customer.phoneNumber}}</div>
@@ -31,7 +33,6 @@
           </nz-col>
 
           <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="8">
-            <h4>&nbsp;</h4>
             <div><strong>Fecha de Facturación</strong></div>
             <div>{{currentInvoice.invoiceDate | date: 'dd-MM-yyyy hh:mm a'}}</div>
             <div><strong>Estado actual</strong></div>
@@ -41,7 +42,6 @@
           </nz-col>
 
           <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="8" style="text-align: right;">
-            <h4>&nbsp;</h4>
             <div><strong>Subtotal:&nbsp;</strong> {{ subTotalAmount | currency }}</div>
             <div><strong>IVA:&nbsp;</strong> {{ vatAmount | currency }}</div>
             <div><strong>Total:&nbsp;</strong> {{ totalAmount | currency }}</div>
@@ -205,8 +205,11 @@
 
         <nz-form-item>
           <nz-form-control [nzXs]="24" [nzSm]="8">
-            <button nz-button nzType="primary" class="small-button">
-              <span nz-icon nzType="edit"></span>Actualizar Factura
+            <button nz-button nzType="default" class="small-button">
+              <nz-icon nzType="save" nzTheme="outline" />Guardar Cambios
+            </button>
+            <button nz-button nzType="primary" class="small-button" type="button" (click)="showConfirmInvoice()" style="margin-left: 8px">
+              <nz-icon nzType="select" nzTheme="outline" />Confirmar Factura
             </button>
           </nz-form-control>
         </nz-form-item>
@@ -241,7 +244,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let payment of invoicePayments">
-              <td>{{ payment.paymentDate | date: 'dd/MM/yyyy hh:mm a' }}</td>
+              <td>{{ payment.paymentDate | date: 'dd-MM-yyyy hh:mm a' }}</td>
               <td>{{ payment.amount | number:'1.2-2' }}</td>
               <td>{{ payment.paymentMethod }}</td>
               <td>{{ payment.description }}</td>
