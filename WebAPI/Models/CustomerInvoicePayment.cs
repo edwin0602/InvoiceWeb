@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace WebAPI.Models
 {
-    public class CustomerInvoicePay
+    public class CustomerInvoicePayment
     {
         [Key]
-        public Guid CustomerInvoicePayId { get; set; } = Guid.NewGuid();
+        public Guid CustomerInvoicePaymentId { get; set; } = Guid.NewGuid();
 
         [Required]
         public Guid CustomerInvoiceId { get; set; }

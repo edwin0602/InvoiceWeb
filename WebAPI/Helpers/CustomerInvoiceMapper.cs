@@ -84,27 +84,29 @@ namespace WebAPI.Helpers
             };
         }
 
-        public static CustomerInvoicePayDto ToDto(CustomerInvoicePay pay)
+        public static InvoicePaymentDto ToDto(CustomerInvoicePayment pay)
         {
-            return new CustomerInvoicePayDto
+            return new InvoicePaymentDto
             {
-                CustomerInvoicePayId = pay.CustomerInvoicePayId,
+                CustomerInvoicePayId = pay.CustomerInvoicePaymentId,
                 CustomerInvoiceId = pay.CustomerInvoiceId,
                 Description = pay.Description,
                 Amount = pay.Amount,
                 PaymentDate = pay.PaymentDate,
                 PaymentMethod = pay.PaymentMethod,
                 Status = pay.Status,
+                UserId = pay.User.UserId,
                 UserName = pay.User?.Username
             };
         }
 
-        public static CustomerInvoicePay ToModel(CustomerInvoicePayDto dto)
+        public static CustomerInvoicePayment ToModel(InvoicePaymentDto dto)
         {
-            return new CustomerInvoicePay
+            return new CustomerInvoicePayment
             {
-                CustomerInvoicePayId = dto.CustomerInvoicePayId != Guid.Empty ? dto.CustomerInvoicePayId : Guid.NewGuid(),
+                CustomerInvoicePaymentId = dto.CustomerInvoicePayId != Guid.Empty ? dto.CustomerInvoicePayId : Guid.NewGuid(),
                 CustomerInvoiceId = dto.CustomerInvoiceId,
+                User_id = dto.UserId,
                 Amount = dto.Amount,
                 PaymentDate = dto.PaymentDate,
                 Description = dto.Description,
@@ -130,11 +132,20 @@ namespace WebAPI.Helpers
                 SubTotalAmount = invoice.SubTotalAmount,
                 VatAmount = invoice.VatAmount,
                 TotalAmount = invoice.TotalAmount,
+                PaidAmount = invoice.PaidAmount,
                 Vat_id = invoice.Vat_id,
+                Customer = invoice.Customer != null ? new CustomerDto
+                {
+                    CustomerId = invoice.Customer.CustomerId,
+                    Name = invoice.Customer.Name,
+                    Email = invoice.Customer.Email,
+                    PhoneNumber = invoice.Customer.PhoneNumber,
+                    Address = invoice.Customer.Address,
+                } : new CustomerDto(),
                 CustomerInvoiceLines = invoice.CustomerInvoiceLines?.Select(ToDto).ToList() ?? new List<CustomerInvoiceLineDto>(),
                 CustomerInvoiceFiles = invoice.CustomerInvoiceFiles?.Select(ToDto).ToList() ?? new List<CustomerInvoiceFileDto>(),
                 CustomerInvoiceNotes = invoice.CustomerInvoiceNotes?.Select(ToDto).ToList() ?? new List<CustomerInvoiceNoteDto>(),
-                CustomerInvoicePays = invoice.CustomerInvoicePays?.Select(ToDto).ToList() ?? new List<CustomerInvoicePayDto>()
+                CustomerInvoicePayments = invoice.CustomerInvoicePayments?.Select(ToDto).ToList() ?? new List<InvoicePaymentDto>()
             };
         }
 
@@ -154,6 +165,29 @@ namespace WebAPI.Helpers
                 SubTotalAmount = dto.SubTotalAmount,
                 VatAmount = dto.VatAmount,
                 TotalAmount = dto.TotalAmount,
+                PaidAmount = dto.PaidAmount,
+                Vat_id = dto.Vat_id,
+                CustomerInvoiceLines = dto.CustomerInvoiceLines?.Select(ToModel).ToList() ?? new List<CustomerInvoiceLine>()
+            };
+        }
+
+        public static CustomerInvoice ToModel(CreateOrUpdateCustomerInvoiceDto dto)
+        {
+            return new CustomerInvoice
+            {
+                CustomerInvoiceId = dto.CustomerInvoiceId,
+                Status = dto.Status,
+                InvoiceType = dto.InvoiceType,
+                Customer_id = dto.Customer_id,
+                User_id = dto.User_id,
+                InvoiceDate = dto.InvoiceDate,
+                ExpirationDate = dto.ExpirationDate,
+                CreationDate = dto.CreationDate,
+                UpdateDate = dto.UpdateDate,
+                SubTotalAmount = dto.SubTotalAmount,
+                VatAmount = dto.VatAmount,
+                TotalAmount = dto.TotalAmount,
+                PaidAmount = dto.PaidAmount,
                 Vat_id = dto.Vat_id,
                 CustomerInvoiceLines = dto.CustomerInvoiceLines?.Select(ToModel).ToList() ?? new List<CustomerInvoiceLine>()
             };

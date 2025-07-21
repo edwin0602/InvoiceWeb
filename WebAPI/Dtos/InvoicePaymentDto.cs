@@ -1,8 +1,9 @@
 ﻿namespace WebAPI.Dtos
 {
-    public class CustomerInvoicePayDto
+    public class InvoicePaymentDto
     {
         public Guid CustomerInvoicePayId { get; set; }
+        public Guid UserId { get; set; }
         public Guid CustomerInvoiceId { get; set; }
         public DateTime PaymentDate { get; set; }
         public decimal Amount { get; set; }

@@ -19,7 +19,7 @@ namespace WebAPI.Data
         public DbSet<CustomerFile> CustomerFiles { get; set; }
         public DbSet<CustomerInvoiceFile> CustomerInvoiceFiles { get; set; }
         public DbSet<CustomerInvoiceNote> CustomerInvoiceNotes { get; set; }
-        public DbSet<CustomerInvoicePay> CustomerInvoicePays { get; set; }
+        public DbSet<CustomerInvoicePayment> CustomerInvoicePays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,9 +43,9 @@ namespace WebAPI.Data
                 .HasForeignKey(cif => cif.CustomerInvoiceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<CustomerInvoicePay>()
+            modelBuilder.Entity<CustomerInvoicePayment>()
                 .HasOne(cil => cil.CustomerInvoice)
-                .WithMany(i => i.CustomerInvoicePays)
+                .WithMany(i => i.CustomerInvoicePayments)
                 .HasForeignKey(cil => cil.CustomerInvoiceId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -54,13 +54,17 @@ public class CustomerInvoice
     [Column(TypeName = "decimal(10,2)")]
     public decimal TotalAmount { get; set; }
 
+    [Required]
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal PaidAmount { get; set; } = 0;
+
     public virtual ICollection<CustomerInvoiceLine> CustomerInvoiceLines { get; set; } = new List<CustomerInvoiceLine>();
 
     public virtual ICollection<CustomerInvoiceFile> CustomerInvoiceFiles { get; set; } = new List<CustomerInvoiceFile>();
 
     public virtual ICollection<CustomerInvoiceNote> CustomerInvoiceNotes { get; set; } = new List<CustomerInvoiceNote>();
 
-    public virtual ICollection<CustomerInvoicePay> CustomerInvoicePays { get; set; } = new List<CustomerInvoicePay>();
+    public virtual ICollection<CustomerInvoicePayment> CustomerInvoicePayments { get; set; } = new List<CustomerInvoicePayment>();
 
     [Required]
     public Guid Vat_id { get; set; }
