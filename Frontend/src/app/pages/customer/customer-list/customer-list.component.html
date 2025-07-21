@@ -10,7 +10,8 @@
           <span nz-icon nzType="search"></span>
         </button>
       </ng-template>
-      <button *nzSpaceItem nz-button nzType="dashed" (click)="loadDataFromServer(pageIndex, pageSize, null, null, [], null)">
+      <button *nzSpaceItem nz-button nzType="dashed"
+        (click)="loadDataFromServer(pageIndex, pageSize, null, null, [], null)">
         <span nz-icon nzType="redo"></span>
         Refrescar
       </button>
@@ -23,17 +24,8 @@
 </nz-page-header>
 
 <div style="overflow-x:auto;">
-  <nz-table
-    #basicTable
-    [nzData]="listOfCustomers"
-    [nzFrontPagination]="false"
-    [nzLoading]="loading"
-    [nzTotal]="total"
-    [nzPageSize]="pageSize"
-    [nzPageIndex]="pageIndex"
-    (nzQueryParams)="onQueryParamsChange($event)"
-    nzBordered
-  >
+  <nz-table #basicTable [nzData]="listOfCustomers" [nzFrontPagination]="false" [nzLoading]="loading" [nzTotal]="total"
+    [nzPageSize]="pageSize" [nzPageIndex]="pageIndex" (nzQueryParams)="onQueryParamsChange($event)" nzBordered>
     <thead>
       <tr>
         <th nzColumnKey="name" nzShowSort>Nombre del Cliente</th>

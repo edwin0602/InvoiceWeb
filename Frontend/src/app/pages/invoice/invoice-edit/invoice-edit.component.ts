@@ -397,13 +397,13 @@ export class InvoiceEditComponent implements OnInit {
 
   showConfirmInvoice(): void {
     this.modal.confirm({
-      nzTitle: '¿Estás seguro de que deseas confirmar esta cotización?',
-      nzContent: '<b style="color: red;">Al confirmar, se convertirá en una factura. Esta acción no se puede deshacer.</b>',
+      nzTitle: '¿Deseas confirmar esta cotización?',
+      nzContent: '<b style="color: red;">Al confirmar, se convertirá en una factura. <br/>Esta acción no se puede deshacer.</b>',
       nzOkText: 'Confimar',
       nzOkType: 'primary',
       nzOkDanger: false,
       nzOnOk: () => this.confirmInvoice(),
-      nzCancelText: 'No',
+      nzCancelText: 'Volver',
       nzOnCancel: () => console.log('Cancel')
     });
   }

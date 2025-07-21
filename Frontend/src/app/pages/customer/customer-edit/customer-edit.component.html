@@ -71,15 +71,9 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="creationDate">Soportes</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <nz-upload
-          class="upload-list-inline"
-          nzListType="picture"
-          [nzFileList]="customerFiles"
-          [nzBeforeUpload]="beforeUpload"
-          [nzLimit]="20"
-          [nzAccept]="'.png,.jpg,.jpeg,.gif,.bmp,.webp,.pdf'"
-          [nzDownload]="onDownloadFile"
-          [nzRemove]="onRemoveFile">
+        <nz-upload class="upload-list-inline" nzListType="picture" [nzFileList]="customerFiles"
+          [nzBeforeUpload]="beforeUpload" [nzLimit]="20" [nzAccept]="'.png,.jpg,.jpeg,.gif,.bmp,.webp,.pdf'"
+          [nzDownload]="onDownloadFile" [nzRemove]="onRemoveFile">
           <button nz-button type="button">
             <span>
               <nz-icon nzType="upload"></nz-icon>
@@ -92,7 +86,7 @@
     <nz-form-item>
       <nz-form-control [nzSm]="14" [nzXs]="24" [nzOffset]="6">
         <button nz-button nzType="primary" [disabled]="!editCustomerForm.valid">
-          <span nz-icon nzType="edit"></span>Editar
+          <nz-icon nzType="save" nzTheme="outline" />Guardar Cambios
         </button>
       </nz-form-control>
     </nz-form-item>

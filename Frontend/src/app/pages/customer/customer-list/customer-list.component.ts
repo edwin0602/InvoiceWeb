@@ -7,10 +7,10 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
-    selector: 'app-customer-list',
-    templateUrl: './customer-list.component.html',
-    styleUrls: ['./customer-list.component.less'],
-    standalone: false
+  selector: 'app-customer-list',
+  templateUrl: './customer-list.component.html',
+  styleUrls: ['./customer-list.component.less'],
+  standalone: false
 })
 export class CustomerListComponent implements OnInit {
   total = 0;
@@ -25,7 +25,7 @@ export class CustomerListComponent implements OnInit {
     private router: Router,
     private message: NzMessageService,
     private modal: NzModalService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadDataFromServer(this.pageIndex, this.pageSize, null, null, [], null);
@@ -89,13 +89,13 @@ export class CustomerListComponent implements OnInit {
 
   showDeleteConfirm(customer: any): void {
     this.modal.confirm({
-      nzTitle: 'Are you sure you want to delete this customer?',
-      nzContent: '<b style="color: red;">This action cannot be undone.</b>',
-      nzOkText: 'Yes',
+      nzTitle: '¿Confirma que desea eliminar este cliente?',
+      nzContent: '<b style="color: red;">Una vez eliminado, no podrá recuperar esta información.</b>',
+      nzOkText: 'Eliminar',
       nzOkType: 'primary',
       nzOkDanger: true,
       nzOnOk: () => this.deleteCustomer(customer),
-      nzCancelText: 'No',
+      nzCancelText: 'Volver',
       nzOnCancel: () => console.log('Cancel')
     });
   }
@@ -103,7 +103,7 @@ export class CustomerListComponent implements OnInit {
   addCustomer(): void {
     this.router.navigate(['/customers/add']);
   }
-  
+
   editCustomer(customerId: string): void {
     this.router.navigate(['/customers/edit', customerId]);
   }

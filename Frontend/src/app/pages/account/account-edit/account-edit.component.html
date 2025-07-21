@@ -1,14 +1,14 @@
-<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Editar Cuenta Bancaria">
+<nz-page-header class="site-page-header" (nzBack)="onBack()" nzBackIcon nzTitle="Editar Método de pago">
 </nz-page-header>
 
 <form nz-form [formGroup]="editAccountForm" (ngSubmit)="submitForm()">
   <nz-form-item>
     <nz-form-label [nzSpan]="7" nzRequired>Numero de cuenta</nz-form-label>
     <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="percentageErrorTpl">
-      <input nz-input formControlName="accountNumber" placeholder="Ingrese el porcentaje de IVA" />
+      <input nz-input formControlName="accountNumber" placeholder="Ingrese el numero de cuenta" />
       <ng-template #percentageErrorTpl let-control>
         <ng-container *ngIf="control.errors?.['required']">
-          ¡Por favor ingrese el porcentaje de IVA!
+          ¡Por favor ingrese el numero de cuenta!
         </ng-container>
       </ng-template>
     </nz-form-control>
@@ -31,9 +31,8 @@
 
   <nz-form-item>
     <nz-form-control [nzOffset]="7" [nzSpan]="12">
-      <button nz-button nzType="primary" [disabled]="!editAccountForm.valid"><span nz-icon
-          nzType="edit"></span>Editar</button>
-      <button nz-button (click)="resetForm($event)">Restablecer</button>
+      <button nz-button nzType="primary" [disabled]="!editAccountForm.valid"><nz-icon nzType="save"
+          nzTheme="outline" />Guardar Cambios</button>
     </nz-form-control>
   </nz-form-item>
 </form>

@@ -63,9 +63,9 @@
 
     <nz-form-item>
       <nz-form-control [nzOffset]="7" [nzSpan]="12">
-        <button nz-button nzType="primary" [disabled]="!editItemForm.valid"><span nz-icon
-            nzType="edit"></span>Editar</button>
-        <button nz-button (click)="resetForm($event)">Restablecer</button>
+        <button nz-button nzType="primary" [disabled]="!editItemForm.valid">
+          <nz-icon nzType="save" nzTheme="outline" />Guardar Cambios
+        </button>
       </nz-form-control>
     </nz-form-item>
   </form>

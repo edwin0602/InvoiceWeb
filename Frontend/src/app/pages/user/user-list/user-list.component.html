@@ -28,22 +28,22 @@
     <thead>
       <tr>
         <th nzColumnKey="username" nzShowSort>Usuario</th>
+        <th nzColumnKey="username" nzShowSort>Nombres</th>
+        <th nzColumnKey="username" nzShowSort>Apellidos</th>
         <th nzColumnKey="emailAddress" nzShowSort>Correo electrónico</th>
-        <th nzColumnKey="photoUrl">Foto</th>
         <th nzColumnKey="roleName">Rol</th>
+        <th nzColumnKey="roleName">Estado</th>
         <th nzColumnKey="actions">Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let user of listOfUsers">
         <td>{{ user.username }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
         <td>{{ user.emailAddress }}</td>
-        <td>
-          <ng-container *ngIf="user.photoUrl">
-            <img [src]="basePath + user.photoUrl" alt="Foto de Perfil" style="max-width: 50px; margin-top: 10px" />
-          </ng-container>
-        </td>
         <td>{{ user.roleName }}</td>
+        <td>{{ user.status }}</td>
         <td>
           <a [routerLink]="['/users/edit', user.userId]">
             <span nz-icon nzType="edit" nzTheme="outline" style="color: orange"></span>

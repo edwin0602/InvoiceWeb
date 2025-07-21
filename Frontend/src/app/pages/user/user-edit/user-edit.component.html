@@ -98,21 +98,6 @@
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="7">Foto de Perfil</nz-form-label>
-      <nz-form-control [nzSpan]="12">
-        <input type="file" (change)="onFileChange($event)" accept="image/*" />
-        <ng-container *ngIf="selectedFilePreview; else existingPhoto">
-          <img [src]="selectedFilePreview" alt="Foto de Perfil" style="max-width: 200px; margin-top: 10px" />
-        </ng-container>
-        <ng-template #existingPhoto>
-          <ng-container *ngIf="photoUrl">
-            <img [src]="basePath + photoUrl" alt="Foto de Perfil" style="max-width: 200px; margin-top: 10px" />
-          </ng-container>
-        </ng-template>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
       <nz-form-label [nzSpan]="7">Contraseña</nz-form-label>
       <nz-form-control [nzSpan]="12">
         <input nz-input type="password" formControlName="passwordHash" />
@@ -125,6 +110,7 @@
         <input nz-input formControlName="creationDate" [disabled]="true" />
       </nz-form-control>
     </nz-form-item>
+
     <nz-form-item>
       <nz-form-label [nzSpan]="7">Fecha de Actualización</nz-form-label>
       <nz-form-control [nzSpan]="12">
@@ -135,9 +121,7 @@
     <nz-form-item>
       <nz-form-control [nzOffset]="7" [nzSpan]="12">
         <button nz-button nzType="primary" [disabled]="!editUserForm.valid">
-          <span nz-icon nzType="edit"></span>Editar
-        </button>
-        <button nz-button (click)="resetForm($event)">Restablecer</button>
+          <nz-icon nzType="save" nzTheme="outline" />Guardar Cambios</button>
       </nz-form-control>
     </nz-form-item>
   </form>
